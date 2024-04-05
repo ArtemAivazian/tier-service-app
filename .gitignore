@@ -1,0 +1,89 @@
+# Compiled Java classes
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Maven - Ignore generated files
+target/
+!src/main/resources/archetype-resources
+!src/test/resources/archetype-resources
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+gen/
+*.ipr
+
+# Node.js - NPM packages
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Logs
+logs
+*.log
+*.log.*
+
+# OS generated files
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# React app - Build artifacts
+/build
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.temp
+
+# Eclipse files
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# Others - Environment variables and personal sensitive data
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore Gradle files
+.gradle
+/build/
+
+# Ignore Spring Boot configuration files
+/src/main/resources/application.properties
+/src/main/resources/application.yml
+!src/main/resources/application-example.properties
+!src/main/resources/application-example.yml
+
+# OS generated files
+.DS_Store*
+
