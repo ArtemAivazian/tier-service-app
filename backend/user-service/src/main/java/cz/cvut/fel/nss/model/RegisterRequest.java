@@ -1,18 +1,20 @@
-package cz.cvut.fel.nss.dto;
+package cz.cvut.fel.nss.model;
 
-import cz.cvut.fel.nss.model.Role;
+import cz.cvut.fel.nss.data.Role;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
-public class UserDto {
-    private Long id;
+@NoArgsConstructor
+public class RegisterRequest {
     private String firstName;
     private String lastName;
     private String email;
     private String password;
-    private Role role;
+//    private Role role;
 }

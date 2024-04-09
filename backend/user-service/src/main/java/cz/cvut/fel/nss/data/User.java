@@ -1,4 +1,4 @@
-package cz.cvut.fel.nss.model;
+package cz.cvut.fel.nss.data;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,26 +9,29 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "users")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @Column(name = "first_name")
+    @GeneratedValue
+    private Integer id;
+
     private String firstName;
-    @Column(name = "last_name")
+
     private String lastName;
-    @Column(name = "email_id", nullable = false, unique = true)
+
     private String email;
+
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -42,14 +45,10 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
 
     @Override
-    public String getPassword() {
-        return password;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
@@ -76,5 +75,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 }

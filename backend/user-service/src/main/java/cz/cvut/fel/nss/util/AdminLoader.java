@@ -1,30 +1,32 @@
 package cz.cvut.fel.nss.util;
 
-import cz.cvut.fel.nss.model.Role;
-import cz.cvut.fel.nss.model.User;
-import cz.cvut.fel.nss.repsitory.UserRepository;
-import cz.cvut.fel.nss.service.UserService;
+import cz.cvut.fel.nss.data.Role;
+import cz.cvut.fel.nss.data.User;
+import cz.cvut.fel.nss.model.RegisterRequest;
+import cz.cvut.fel.nss.repository.UserRepository;
+import cz.cvut.fel.nss.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class AdminLoader implements CommandLineRunner {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    private static final List<User> ADMINS = List.of(
-            new User("Artem", "Aivazian", "aivazart@fel.cvut.cz", "123", Role.ROLE_ADMIN),
-            new User("Ilia", "Zozuliak", "zozulill@fel.cvut.cz", "456", Role.ROLE_ADMIN)
+    public static Set<User> ADMINS = Set.of(
+            new User("Artem", "Aivazian", "aivazart@fel.cvut.cz", "P@ssword123", Role.ADMIN)
     );
 
     @Override
-    public void run(String... args) {
-        for (User admin : ADMINS) {
-            userService.registerAdmin(admin);
-        }
+    public void run(String... args) throws Exception {
+        ADMINS.stream()
+                .peek(admin -> admin.setPassword(passwordEncoder.encode(admin.getPassword())))
+                .forEach(userRepository::save);
     }
 }
