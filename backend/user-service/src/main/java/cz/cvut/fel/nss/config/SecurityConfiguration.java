@@ -13,8 +13,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static cz.cvut.fel.nss.data.Role.ADMIN;
-import static cz.cvut.fel.nss.data.Role.USER;
+import static cz.cvut.fel.nss.data.Permission.*;
+import static cz.cvut.fel.nss.data.Role.*;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;

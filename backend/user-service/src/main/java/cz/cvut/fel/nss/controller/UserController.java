@@ -9,13 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
-    @GetMapping
-    public String getMember() {
-        return "Secured Endpoint :: GET - user controller";
-    }
-
-    @PostMapping
-    public String post() {
-        return "POST:: user controller";
+    @GetMapping("/info")
+    public String getInfo() {
+        return "Secured Endpoint :: GET - user info";
     }
 }
