@@ -1,0 +1,50 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+#      discovery:
+#        locator:
+#          enabled: true
+#          lower-case-service-id: true
+      routes:
+        - id: user-service-auth-register
+          uri: lb://user-service #app name after lb://
+          predicates:
+            - Path=/user-service/auth/register
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /${segment}
+        - id: user-service-auth-login
+          uri: lb://user-service
+          predicates:
+            - Path=/user-service/auth/authenticate
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /${segment}
+        - id: user-service-user-crud
+          uri: lb://user-service
+          predicates:
+            - Path=/user-service/user
+            - Method=GET,POST,PUT,DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /${segment}
+        - id: user-service-admin-crud
+          uri: lb://user-service
+          predicates:
+            - Path=/user-service/admin
+            - Method=GET,POST,PUT,DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /${segment}
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8010/eureka
+
+

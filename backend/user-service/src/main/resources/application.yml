@@ -1,7 +1,18 @@
 server:
-  port: 8081
+  port: ${PORT:0} #authomatically assigned port number is 0 if have not been provided PORT form cli
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8010/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
 
 spring:
+  devtools:
+    restart:
+      enabled: true #automatically restart app after making changes
   application:
     name: user-service
   datasource:
