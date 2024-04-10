@@ -17,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-//ADD TO API GATEWAY??
+
 /**
  * OncePerRequestFilter means that for each sent request this filter will be applied
  *  guarantees that each request will be authorized

@@ -35,7 +35,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
                         req.requestMatchers("/auth/**")
-//                                .permitAll()
+//                                //request to /auth only from api gateway
                                 .access(new WebExpressionAuthorizationManager(
                                         "hasIpAddress('"+env.getProperty("gateway.ip")+"')"))
                                 .requestMatchers("/admin/**").hasRole(ADMIN.name())
