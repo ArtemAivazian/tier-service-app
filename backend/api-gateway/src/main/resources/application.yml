@@ -29,27 +29,48 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /${segment}
         #user crud
-        - id: user-service-user-crud
+#        - id: user-service-user-crud
+#          uri: lb://user-service
+#          predicates:
+#            - Path=/user-service/user
+#            - Method=GET,POST,PUT,DELETE
+#            - Header=Authorization, Bearer (.*) #request must have bearer token in its header
+#          filters:
+#            - RemoveRequestHeader=Cookie
+#            - RewritePath=/user-service/(?<segment>.*), /${segment}
+#            - AuthorizationHeaderFilter #NEW
+#        #admin crud
+#        - id: user-service-admin-crud
+#          uri: lb://user-service
+#          predicates:
+#            - Path=/user-service/admin
+#            - Method=GET,POST,PUT,DELETE
+#            - Header=Authorization, Bearer (.*)
+#          filters:
+#            - RemoveRequestHeader=Cookie
+#            - RewritePath=/user-service/(?<segment>.*), /${segment}
+#            - AuthorizationHeaderFilter #NEW
+              #admin crud
+        - id: user-service-admin
           uri: lb://user-service
           predicates:
-            - Path=/user-service/user
-            - Method=GET,POST,PUT,DELETE
-            - Header=Authorization, Bearer (.*) #request must have bearer token in its header
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /${segment}
-            - AuthorizationHeaderFilter #NEW
-        #admin crud
-        - id: user-service-admin-crud
-          uri: lb://user-service
-          predicates:
-            - Path=/user-service/admin
+            - Path=/user-service/admin/**
             - Method=GET,POST,PUT,DELETE
             - Header=Authorization, Bearer (.*)
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /${segment}
-            - AuthorizationHeaderFilter #NEW
+            - AuthorizationHeaderFilter=ROLE_ADMIN
+        - id: user-service-user
+          uri: lb://user-service
+          predicates:
+            - Path=/user-service/user/**
+            - Method=GET,UPDATE
+            - Header=Authorization, Bearer (.*)
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /${segment}
+            - AuthorizationHeaderFilter=ROLE_USER ROLE_ADMIN
 eureka:
   client:
     service-url:

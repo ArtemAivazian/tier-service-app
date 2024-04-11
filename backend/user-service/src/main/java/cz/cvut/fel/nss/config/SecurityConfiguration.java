@@ -38,8 +38,6 @@ public class SecurityConfiguration {
 //                                //request to /auth only from api gateway
                                 .access(new WebExpressionAuthorizationManager(
                                         "hasIpAddress('"+env.getProperty("gateway.ip")+"')"))
-                                .requestMatchers("/admin/**").hasRole(ADMIN.name())
-                                .requestMatchers("/user/**").hasAnyRole(USER.name(), ADMIN.name())
                                 .anyRequest()
                                 .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))

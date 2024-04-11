@@ -4,7 +4,7 @@ import cz.cvut.fel.nss.model.AuthenticationRequest;
 import cz.cvut.fel.nss.model.AuthenticationResponse;
 import cz.cvut.fel.nss.model.RegisterRequest;
 import cz.cvut.fel.nss.model.RegisterResponse;
-import cz.cvut.fel.nss.service.AuthService;
+import cz.cvut.fel.nss.service.impl.AuthServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+    private final AuthServiceImpl authService;
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(

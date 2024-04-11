@@ -24,7 +24,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     private String firstName;
 
@@ -32,17 +32,20 @@ public class User implements UserDetails {
 
     private String email;
 
+    private String userId;
+
     private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public User(String firstName, String lastName, String email, String password, Role role) {
+    public User(String userId, String firstName, String lastName, String email, String password, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.userId = userId;
     }
 
 
