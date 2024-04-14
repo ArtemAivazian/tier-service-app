@@ -1,0 +1,47 @@
+server:
+  port: ${PORT:0}
+
+# EUREKA
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8010/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+spring:
+  devtools:
+    restart:
+      enabled: true #automatically restart app after making changes
+  application:
+    name: product-service
+  datasource:
+    url: jdbc:postgresql://localhost:5443/products
+    username: "admin"
+    password: "123"
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  #KAFKA
+  kafka:
+    bootstrap-servers: localhost:9092  # Use "kafka:9092" if running inside Docker network
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    topic:
+      name: productUpdatedTopic
+
+gateway:
+  ip: 10.0.56.5
+
+logging:
+  level:
+    org.springframework.security: TRACE
