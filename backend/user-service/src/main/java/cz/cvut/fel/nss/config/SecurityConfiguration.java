@@ -27,7 +27,7 @@ public class SecurityConfiguration {
 
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthFilter jwtAuthFilter;
-    private final Environment env;
+//    private final Environment env;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,8 +36,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers("/auth/**")
 //                                //request to /auth only from api gateway
-                                .access(new WebExpressionAuthorizationManager(
-                                        "hasIpAddress('"+env.getProperty("gateway.ip")+"')"))
+//                                .access(new WebExpressionAuthorizationManager(
+//                                        "hasIpAddress('"+env.getProperty("gateway.ip")+"')"))
+                                .permitAll()
                                 .anyRequest()
                                 .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
