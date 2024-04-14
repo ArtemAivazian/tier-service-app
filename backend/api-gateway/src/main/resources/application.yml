@@ -10,7 +10,7 @@ spring:
 #          enabled: true
 #          lower-case-service-id: true
       routes:
-        #user registration
+        #user
         - id: user-service-auth-register
           uri: lb://user-service #app name after lb://
           predicates:
@@ -19,7 +19,6 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /${segment}
-        #user/admin login
         - id: user-service-auth-login
           uri: lb://user-service
           predicates:
@@ -28,29 +27,6 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /${segment}
-        #user crud
-#        - id: user-service-user-crud
-#          uri: lb://user-service
-#          predicates:
-#            - Path=/user-service/user
-#            - Method=GET,POST,PUT,DELETE
-#            - Header=Authorization, Bearer (.*) #request must have bearer token in its header
-#          filters:
-#            - RemoveRequestHeader=Cookie
-#            - RewritePath=/user-service/(?<segment>.*), /${segment}
-#            - AuthorizationHeaderFilter #NEW
-#        #admin crud
-#        - id: user-service-admin-crud
-#          uri: lb://user-service
-#          predicates:
-#            - Path=/user-service/admin
-#            - Method=GET,POST,PUT,DELETE
-#            - Header=Authorization, Bearer (.*)
-#          filters:
-#            - RemoveRequestHeader=Cookie
-#            - RewritePath=/user-service/(?<segment>.*), /${segment}
-#            - AuthorizationHeaderFilter #NEW
-              #admin crud
         - id: user-service-admin
           uri: lb://user-service
           predicates:
@@ -71,6 +47,44 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /${segment}
             - AuthorizationHeaderFilter=ROLE_USER ROLE_ADMIN
+          #product
+        - id: product-service-create
+          uri: lb://product-service
+          predicates:
+            - Path=/product-service/product/**
+            - Method=POST,GET,PATCH
+#            - Header=Authorization, Bearer (.*)
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/product-service/(?<segment>.*), /${segment}
+#            - AuthorizationHeaderFilter=ROLE_ADMIN
+        #stock
+        - id: product-service-create-stock
+          uri: lb://product-service
+          predicates:
+            - Path=/product-service/stock
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/product-service/(?<segment>.*), /${segment}
+        #order
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/order-service/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/order-service/(?<segment>.*), /${segment}
+#        - id: order-service-place
+#          uri: lb://order-service
+#          predicates:
+#            - Path=/order-service/order/place
+#            - Method=POST
+#          filters:
+#            - RemoveRequestHeader=Cookie
+#            - RewritePath=/order-service/(?<segment>.*), /${segment}
+
 eureka:
   client:
     service-url:
