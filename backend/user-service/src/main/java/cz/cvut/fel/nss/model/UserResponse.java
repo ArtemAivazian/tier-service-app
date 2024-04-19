@@ -1,5 +1,6 @@
 package cz.cvut.fel.nss.model;
 
+import cz.cvut.fel.nss.data.Role;
 import lombok.Data;
 
 import java.util.List;
@@ -10,6 +11,7 @@ public class UserResponse {
     private String firstName;
     private String lastName;
     private String email;
+    private Role role;
     private List<OrderResponse> orders;
 
 }

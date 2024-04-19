@@ -34,35 +34,37 @@ public class ProductsService {
     }
 
     public List<ProductResponse> findAllProducts() {
-        List<Product> products = productRepository.findAll();
-        List<ProductResponse> responses = new ArrayList<>();
-        for (var product : products) {
-            ProductResponse response = ProductResponse.builder()
-                    .productId(product.getProductId())
-                    .orderId(product.getOrderId())
-                    .name(product.getName())
-                    .price(product.getPrice())
-                    .quantity(product.getQuantity())
-                    .build();
-            responses.add(response);
-        }
-        return responses;
+//        List<Product> products = productRepository.findAll();
+//        List<ProductResponse> responses = new ArrayList<>();
+//        for (var product : products) {
+//            ProductResponse response = ProductResponse.builder()
+//                    .productId(product.getProductId())
+//                    .orderId(product.getOrderId())
+//                    .name(product.getName())
+//                    .price(product.getPrice())
+//                    .quantity(product.getQuantity())
+//                    .build();
+//            responses.add(response);
+//        }
+//        return responses;
+        return null;
     }
 
     public List<ProductResponse> getProductsByOrderId(Long orderId) {
-        List<Product> products = productRepository.findAllByOrderId(orderId);
-        List<ProductResponse> responses = new ArrayList<>();
-        for (var product : products) {
-            ProductResponse response = ProductResponse.builder()
-                    .productId(product.getProductId())
-                    .orderId(product.getOrderId())
-                    .name(product.getName())
-                    .price(product.getPrice())
-                    .quantity(product.getQuantity())
-                    .build();
-            responses.add(response);
-        }
-        return responses;
+//        List<Product> products = productRepository.findAllByOrderId(orderId);
+//        List<ProductResponse> responses = new ArrayList<>();
+//        for (var product : products) {
+//            ProductResponse response = ProductResponse.builder()
+//                    .productId(product.getProductId())
+//                    .orderId(product.getOrderId())
+//                    .name(product.getName())
+//                    .price(product.getPrice())
+//                    .quantity(product.getQuantity())
+//                    .build();
+//            responses.add(response);
+//        }
+//        return responses;
+        return null;
     }
 
 
@@ -110,15 +112,15 @@ public class ProductsService {
                         changes.put("stockId", value);
                     }
                     break;
-                case "orderId":
-                    if (product.getOrderId() == null) {
-                        product.setOrderId(Long.valueOf(String.valueOf(value)));
-                        changes.put("orderId", value);
-                    }
-                    if (!product.getOrderId().equals(value)) {
-                        product.setOrderId(Long.valueOf(String.valueOf(value)));
-                        changes.put("orderId", value);
-                    }
+//                case "orderId":
+//                    if (product.getOrderId() == null) {
+//                        product.setOrderId(Long.valueOf(String.valueOf(value)));
+//                        changes.put("orderId", value);
+//                    }
+//                    if (!product.getOrderId().equals(value)) {
+//                        product.setOrderId(Long.valueOf(String.valueOf(value)));
+//                        changes.put("orderId", value);
+//                    }
             }
         });
 

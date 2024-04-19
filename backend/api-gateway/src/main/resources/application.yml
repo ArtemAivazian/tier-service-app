@@ -55,11 +55,11 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/product-service/(?<segment>.*), /${segment}
         #order
-        - id: order-service-get-user-orders
+        - id: order-service
           uri: lb://order-service
           predicates:
             - Path=/order-service/**
-            - Method=GET
+            - Method=GET,POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/order-service/(?<segment>.*), /${segment}

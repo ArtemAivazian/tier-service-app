@@ -12,6 +12,5 @@ import java.util.List;
 public class OrderResponse {
     private Long orderId;
     private Long userId;
-    private State state;
-    private List<ProductResponse> products;
+    private List<ProductResponse> orderedProducts;
 }

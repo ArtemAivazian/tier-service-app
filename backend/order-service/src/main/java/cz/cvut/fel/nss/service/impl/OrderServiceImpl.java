@@ -4,21 +4,18 @@ import cz.cvut.fel.nss.data.Order;
 import cz.cvut.fel.nss.model.*;
 import cz.cvut.fel.nss.repository.OrderRepository;
 import cz.cvut.fel.nss.service.OrderService;
-import cz.cvut.fel.nss.service.ProductServiceClient;
 import lombok.AllArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private OrderRepository orderRepository;
-    private ProductServiceClient productServiceClient;
     @Override
     public OrderResponse getOrder(Long orderId) {
 //        Order optionalOrder = orderRepository.getOrderByOrderId(orderId);
@@ -38,18 +35,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResponse> getUserOrders(String userId, String authorization) {
+    public List<OrderResponse> getUserOrders(String userId) {
         List<Order> orders = orderRepository.getOrdersByUserId(Long.valueOf(userId));
         ModelMapper mapper = new ModelMapper();
         List<OrderDto> orderDtos = orders.stream()
                 .map(order -> mapper.map(order, OrderDto.class))
                 .toList();
 
-        //TO DO : set products in orderDto using Feign
         orderDtos.forEach(
-                orderDto -> orderDto.setProducts(
-                        productServiceClient.getProductsByOrderId(orderDto.getOrderId(), authorization))
+                orderDto -> orderDto.setOrderedProducts(
+                        orderRepository.getOrderedProductsByOrderId(orderDto.getOrderId()))
         );
+
 
         List<OrderResponse> returnValue = orderDtos.stream()
                 .map(orderDto -> mapper.map(orderDto, OrderResponse.class))
@@ -58,17 +55,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderInitResponse initOrder(OrderInitRequest request) {
-        Order order = Order.builder()
-                .userId(request.getUserId())
-                .status("INIT")
-                .build();
-        OrderInitResponse response = OrderInitResponse.builder()
-                .id(order.getOrderId())
-                .userId(order.getUserId())
-                .status("Order has been initialized")
-                .build();
-        orderRepository.save(order);
-        return response;
+    public OrderDto placeOrder(OrderDto orderRequestDto) {
+
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        Order order = modelMapper.map(orderRequestDto, Order.class);
+        Order placedOrder = orderRepository.save(order);
+        //send Notification
+
+        OrderDto returnValue = modelMapper.map(placedOrder, OrderDto.class);
+        return returnValue;
+
     }
+
 }

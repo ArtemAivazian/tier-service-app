@@ -1,6 +1,6 @@
 package cz.cvut.fel.nss.model;
 
-import cz.cvut.fel.nss.data.State;
+import cz.cvut.fel.nss.data.OrderedProduct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +15,5 @@ import java.util.List;
 public class OrderResponse {
     private Long orderId;
     private Long userId;
-    private State state;
-    private List<ProductResponse> products;
+    private List<OrderedProduct> orderedProducts;
 }

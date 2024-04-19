@@ -17,9 +17,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/product")
 @AllArgsConstructor
-public class ProductsController {
+public class  ProductsController {
 
-    private ProductsService productsService;
+    private final ProductsService productsService;
     @PatchMapping("/{productId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Product> patchProduct(
