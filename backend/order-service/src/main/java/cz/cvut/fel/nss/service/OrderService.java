@@ -10,5 +10,7 @@ import java.util.List;
 public interface OrderService {
     OrderResponse getOrder(Long orderId);
 
+    List<OrderResponse> getUserOrders(String userId, String authorization);
+
     OrderInitResponse initOrder(OrderInitRequest request);
 }

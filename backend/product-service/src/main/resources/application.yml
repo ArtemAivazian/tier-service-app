@@ -42,6 +42,15 @@ spring:
 gateway:
   ip: 10.0.56.5
 
+token:
+  secret: 9a2f8c4e6b0d71f3e8b925a45747f894a3d6bc70fa8d5e21a15a6d8c3b9a0e7c
+
+authorization:
+  token:
+    header:
+      name: Authorization
+      prefix: Bearer
+
 logging:
   level:
     org.springframework.security: TRACE

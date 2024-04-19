@@ -8,6 +8,7 @@ import cz.cvut.fel.nss.service.ProductsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class ProductsController {
 
     private ProductsService productsService;
     @PatchMapping("/{productId}")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Product> patchProduct(
             @PathVariable("productId") Long productId,
             @RequestBody Map<String, Object> updates
@@ -30,7 +31,7 @@ public class ProductsController {
     }
 
     @PostMapping("/create")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Product> createProduct(
             @RequestBody CreateProductRequest request
     ) {
@@ -39,6 +40,7 @@ public class ProductsController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
         List<ProductResponse> responses = productsService.findAllProducts();
         return ResponseEntity.ok(responses);
@@ -46,7 +48,10 @@ public class ProductsController {
 
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<List<ProductResponse>> getProductsByOrderId(@PathVariable("orderId") Long orderId) {
+//    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<List<ProductResponse>> getProductsByOrderId(
+            @PathVariable("orderId") Long orderId
+    ) {
         List<ProductResponse> responses  = productsService.getProductsByOrderId(orderId);
         return ResponseEntity.ok(responses);
     }

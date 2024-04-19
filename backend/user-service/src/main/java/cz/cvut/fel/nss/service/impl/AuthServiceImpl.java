@@ -1,71 +1,111 @@
 package cz.cvut.fel.nss.service.impl;
 
 import cz.cvut.fel.nss.data.Role;
-import cz.cvut.fel.nss.model.AuthenticationRequest;
-import cz.cvut.fel.nss.model.AuthenticationResponse;
-import cz.cvut.fel.nss.model.RegisterRequest;
-import cz.cvut.fel.nss.model.RegisterResponse;
+import cz.cvut.fel.nss.data.UserEntity;
+import cz.cvut.fel.nss.model.*;
 import cz.cvut.fel.nss.config.JwtService;
-import cz.cvut.fel.nss.data.User;
 import cz.cvut.fel.nss.repository.AuthRepository;
 import cz.cvut.fel.nss.service.AuthService;
+import cz.cvut.fel.nss.service.OrdersServiceClient;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
+import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    private  final AuthRepository authRepository;
-    private  final JwtService jwtService;
+    private final AuthRepository authRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
+    private final OrdersServiceClient ordersServiceClient;
 
-    public RegisterResponse register(RegisterRequest registerRequest) {
-        var user = User.builder()
-                .firstName(registerRequest.getFirstName())
-                .lastName(registerRequest.getLastName())
-                .email(registerRequest.getEmail())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .userId(UUID.randomUUID().toString())
-                .role(Role.USER)
-                .build();
-        var savedUser = authRepository.save(user);
-        return RegisterResponse.builder()
-                .firstName(savedUser.getFirstName())
-                .lastName(savedUser.getLastName())
-                .email(savedUser.getEmail())
-                .userId(savedUser.getUserId())
-                .role(savedUser.getRole())
-                .build();
+    public UserDto register(UserDto userDetails) {
+
+        userDetails.setEncryptedPassword(passwordEncoder.encode(userDetails.getPassword()));
+        userDetails.setRole(Role.USER);
+
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        UserEntity userEntity = modelMapper.map(userDetails, UserEntity.class);
+
+        authRepository.save(userEntity);
+
+        UserDto returnValue = modelMapper.map(userEntity, UserDto.class);
+        return returnValue;
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        //FirstStep
-            //We need to validate our request (validate whether password & username is correct)
-            //Verify whether user present in the database
-            //Which AuthenticationProvider -> DaoAuthenticationProvider (Inject)
-            //We need to authenticate using authenticationManager injecting this authenticationProvider
-        //SecondStep
-            //Verify whether userName and password is correct => UserNamePasswordAuthenticationToken
-            //Verify whether user present in db
-            //generateToken
-            //Return the token
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-        var user = authRepository.findByEmail(request.getEmail())
-                .orElseThrow();
-        String jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder().accessToken(jwtToken).build();
+    @Override
+    public UserDto getUserDetailsByEmail(String email) {
+        UserEntity userEntity = authRepository.findByEmail(email);
 
+        if (userEntity == null) throw new UsernameNotFoundException(email);
+
+        return new ModelMapper().map(userEntity, UserDto.class);
     }
+
+    @Override
+    public UserDto getUserByUserId(String userId, String authorization) {
+        UserEntity userEntity = authRepository.findByUserId(Long.valueOf(userId));
+        if(userEntity == null) throw new UsernameNotFoundException("User not found");
+
+        UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
+
+        List<OrderResponse> orderResponses = ordersServiceClient.getOrders(userId, authorization);
+
+
+        userDto.setOrders(orderResponses);
+
+        return userDto;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity userEntity = authRepository.findByEmail(username);
+
+        if (userEntity == null) throw new UsernameNotFoundException(username);
+
+        return new User(
+                    userEntity.getEmail(),
+                    userEntity.getEncryptedPassword(),
+                    true, true, true, true,
+                    userEntity.getAuthorities()
+                );
+    }
+
+
+    //    @Override
+//    public UserDto getUserByUserId(String userId) {
+//        UserEntity userEntity = userRepository.findByUserId(userId);
+//        if(userEntity == null) throw new UsernameNotFoundException("User not found");
+//
+//        UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
+//
+//        return userDto;
+//    }
+//
+//    @Override
+//    public List<UserDto> getAllUsers() {
+//        ModelMapper mapper = new ModelMapper();
+//        List<UserEntity> userEntities = userRepository.findAll();
+//        return userEntities.stream()
+//                .map(user -> mapper.map(user, UserDto.class))
+//                .toList();
+//    }
+//
+//    @Override
+//    public void deleteByUserId(String userId) {
+//        userRepository.deleteByUserId(userId);
+//    }
 }
 

@@ -1,7 +1,7 @@
 package cz.cvut.fel.nss.util;
 
 import cz.cvut.fel.nss.data.Role;
-import cz.cvut.fel.nss.data.User;
+import cz.cvut.fel.nss.data.UserEntity;
 import cz.cvut.fel.nss.repository.AuthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -18,14 +18,21 @@ public class AdminLoader implements CommandLineRunner {
     private final AuthRepository authRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public static Set<User> ADMINS = Set.of(
-            new User(UUID.randomUUID().toString(), "Artem", "Aivazian", "aivazart@fel.cvut.cz", "P@ssword123", Role.ADMIN)
-    );
 
     @Override
     public void run(String... args) throws Exception {
-        ADMINS.stream()
-                .peek(admin -> admin.setPassword(passwordEncoder.encode(admin.getPassword())))
-                .forEach(authRepository::save);
+        UserEntity adminUser = new UserEntity();
+        adminUser.setUserId(1L);
+        adminUser.setFirstName("Artem");
+        adminUser.setLastName("Aivazian");
+        adminUser.setEmail("aivazart@fel.cvut.cz");
+        adminUser.setEncryptedPassword(passwordEncoder.encode("P@ssword123"));
+        adminUser.setRole(Role.ADMIN);
+
+//        UserEntity storedAdminUser = authRepository.findByEmail("aivazart@fel.cvut.cz");
+//
+//        if(storedAdminUser == null) {
+        authRepository.save(adminUser);
+//        }
     }
 }

@@ -1,51 +1,69 @@
 package cz.cvut.fel.nss.config;
 
-import lombok.RequiredArgsConstructor;
+import cz.cvut.fel.nss.service.AuthService;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static cz.cvut.fel.nss.data.Permission.*;
-import static cz.cvut.fel.nss.data.Role.*;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+@AllArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-    private final AuthenticationProvider authenticationProvider;
-    private final JwtAuthFilter jwtAuthFilter;
+//    private final AuthenticationProvider authenticationProvider;
+//    private final JwtAuthFilter jwtAuthFilter;
 //    private final Environment env;
+    private final AuthService  authService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final Environment environment;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req ->
-                        req.requestMatchers("/auth/**")
+
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+
+        authenticationManagerBuilder.userDetailsService(authService)
+                .passwordEncoder(passwordEncoder);
+
+        AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
+
+        AuthenticationFilter authenticationFilter =
+                new AuthenticationFilter(authService, authenticationManager, jwtService);
+        authenticationFilter.setFilterProcessesUrl("/users/authenticate");
+
+        http
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(req ->
+                    req
+                            .anyRequest()
 //                                //request to /auth only from api gateway
 //                                .access(new WebExpressionAuthorizationManager(
 //                                        "hasIpAddress('"+env.getProperty("gateway.ip")+"')"))
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated())
-                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-                .authenticationProvider(authenticationProvider)
-                // jwtAuthFilter will be executed before UsernamePasswordAuthenticationFilter
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                            .permitAll()
+            )
+
+            .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+            .addFilter(new AuthorizationFilter(authenticationManager, environment, jwtService))
+            .addFilter(authenticationFilter)
+            .authenticationManager(authenticationManager);
+//                .authenticationProvider(authenticationProvider)
+//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
+        return http.build();
     }
 
 }

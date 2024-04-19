@@ -1,17 +1,18 @@
-package cz.cvut.fel.nss.model.dto;
+package cz.cvut.fel.nss.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
-public class ProductDto {
+@NoArgsConstructor
+public class ProductResponse {
     private Long productId;
     private String name;
     private BigDecimal price;
     private Integer quantity;
-    private Long stockId;
     private Long orderId;
 }

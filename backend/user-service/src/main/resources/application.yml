@@ -37,6 +37,12 @@ token:
   secret: 9a2f8c4e6b0d71f3e8b925a45747f894a3d6bc70fa8d5e21a15a6d8c3b9a0e7c
   jwt_expiration_time: 86400000
 
+authorization:
+  token:
+    header:
+      name: Authorization
+      prefix: Bearer
+
 #login:
 #  url:
 #    path: /users/login

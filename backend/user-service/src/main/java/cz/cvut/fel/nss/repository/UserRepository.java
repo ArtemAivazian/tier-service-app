@@ -1,11 +1,13 @@
 package cz.cvut.fel.nss.repository;
 
+import cz.cvut.fel.nss.data.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import cz.cvut.fel.nss.data.User;
 
-@Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    User findByUserId(String userId);
-    void deleteByUserId(String userId);
+//@Repository
+public interface UserRepository
+//        extends JpaRepository<UserEntity, Long>
+{
+//    UserEntity findByUserId(Long userId);
+//    void deleteByUserId(Long userId);
 }

@@ -22,52 +22,54 @@ import java.io.IOException;
  * OncePerRequestFilter means that for each sent request this filter will be applied
  *  guarantees that each request will be authorized
  */
-@Component
-@RequiredArgsConstructor
-public class JwtAuthFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
-
-    @Override
-    protected void doFilterInternal
-            (@NonNull HttpServletRequest request,
-             @NonNull HttpServletResponse response,
-             @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
-        //Verify whether request has Authorization header and it has Bearer in it
-        final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String email;
-        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        //Extract jwt from the Authorization header
-        jwt = authHeader.substring(7);
-        //Verify whether user is present in db
-        //Verify whether token is valid
-        email = jwtService.extractUsername(jwt);
-        //If user is present and no authentication object in securityContext
-        if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
-            //If valid set to security context holder
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, //for username
-                    null, //i do not want to store my pass in security context holder
-                    userDetails.getAuthorities() //roles
-            );
-            authToken.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request)
-            );
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-        }
-        filterChain.doFilter(request, response);
-    }
-
-    //Verify if it is whitelisted path and if yes dont do anything
-    @Override
-    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) throws ServletException {
-        return request.getServletPath().contains("/auth/register"); //filter will not be applied for registration
-    }
+//@Component
+//@RequiredArgsConstructor
+public class JwtAuthFilter
+// extends OncePerRequestFilter
+ {
+//    private final JwtService jwtService;
+//    private final UserDetailsService userDetailsService;
+//
+//    @Override
+//    protected void doFilterInternal
+//            (@NonNull HttpServletRequest request,
+//             @NonNull HttpServletResponse response,
+//             @NonNull FilterChain filterChain)
+//            throws ServletException, IOException {
+//        //Verify whether request has Authorization header and it has Bearer in it
+//        final String authHeader = request.getHeader("Authorization");
+//        final String jwt;
+//        final String email;
+//        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+//        //Extract jwt from the Authorization header
+//        jwt = authHeader.substring(7);
+//        //Verify whether user is present in db
+//        //Verify whether token is valid
+//        email = jwtService.extractUsername(jwt);
+//        //If user is present and no authentication object in securityContext
+//        if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+//            UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
+//            //If valid set to security context holder
+//            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+//                    userDetails, //for username
+//                    null, //i do not want to store my pass in security context holder
+//                    userDetails.getAuthorities() //roles
+//            );
+//            authToken.setDetails(
+//                    new WebAuthenticationDetailsSource().buildDetails(request)
+//            );
+//            SecurityContextHolder.getContext().setAuthentication(authToken);
+//        }
+//        filterChain.doFilter(request, response);
+//    }
+//
+//    //Verify if it is whitelisted path and if yes dont do anything
+//    @Override
+//    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) throws ServletException {
+//        return request.getServletPath().contains("/auth/register"); //filter will not be applied for registration
+//    }
 
 }

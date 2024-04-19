@@ -14,7 +14,7 @@ spring:
         - id: user-service-auth-register
           uri: lb://user-service #app name after lb://
           predicates:
-            - Path=/user-service/auth/register
+            - Path=/user-service/users/register
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
@@ -22,31 +22,19 @@ spring:
         - id: user-service-auth-login
           uri: lb://user-service
           predicates:
-            - Path=/user-service/auth/authenticate
+            - Path=/user-service/users/authenticate
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /${segment}
-        - id: user-service-admin
+        - id: user-service-get-user
           uri: lb://user-service
           predicates:
-            - Path=/user-service/admin/**
-            - Method=GET,POST,PUT,DELETE
-            - Header=Authorization, Bearer (.*)
+            - Path=/user-service/users/**
+            - Method=GET
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /${segment}
-            - AuthorizationHeaderFilter=ROLE_ADMIN
-        - id: user-service-user
-          uri: lb://user-service
-          predicates:
-            - Path=/user-service/user/**
-            - Method=GET,UPDATE
-            - Header=Authorization, Bearer (.*)
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /${segment}
-            - AuthorizationHeaderFilter=ROLE_USER ROLE_ADMIN
           #product
         - id: product-service-create
           uri: lb://product-service
@@ -57,7 +45,6 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/product-service/(?<segment>.*), /${segment}
-#            - AuthorizationHeaderFilter=ROLE_ADMIN
         #stock
         - id: product-service-create-stock
           uri: lb://product-service
@@ -68,22 +55,14 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/product-service/(?<segment>.*), /${segment}
         #order
-        - id: order-service
+        - id: order-service-get-user-orders
           uri: lb://order-service
           predicates:
             - Path=/order-service/**
-            - Method=GET,POST
+            - Method=GET
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/order-service/(?<segment>.*), /${segment}
-#        - id: order-service-place
-#          uri: lb://order-service
-#          predicates:
-#            - Path=/order-service/order/place
-#            - Method=POST
-#          filters:
-#            - RemoveRequestHeader=Cookie
-#            - RewritePath=/order-service/(?<segment>.*), /${segment}
 
 eureka:
   client:
