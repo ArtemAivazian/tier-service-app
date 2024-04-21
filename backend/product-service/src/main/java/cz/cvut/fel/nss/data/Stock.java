@@ -23,5 +23,6 @@ public class Stock {
             generator = "stock_sequence"
     )
     private Long stockId;
+    @Column(nullable = false)
     private String address;
 }

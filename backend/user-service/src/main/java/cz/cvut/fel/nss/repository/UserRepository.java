@@ -4,10 +4,8 @@ import cz.cvut.fel.nss.data.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-//@Repository
-public interface UserRepository
-//        extends JpaRepository<UserEntity, Long>
-{
-//    UserEntity findByUserId(Long userId);
-//    void deleteByUserId(Long userId);
+@Repository
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+    UserEntity findByEmail(String email);
+    UserEntity findByUserId(Long userId);
 }

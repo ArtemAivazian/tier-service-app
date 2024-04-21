@@ -32,20 +32,12 @@ public class SecurityConfiguration {
 
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
-        http
+        return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req ->
-                        req
-                                .requestMatchers("/product/all")
-                                .permitAll()
-                                .anyRequest()
-//                                .authenticated()
-                                .permitAll()
-                )
                 .addFilter(new AuthorizationFilter(authenticationManager, env, jwtService))
                 .authenticationManager(authenticationManager)
-                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS));
-        return http.build();
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                .build();
     }
 
 }

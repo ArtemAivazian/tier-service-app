@@ -1,14 +1,16 @@
 package cz.cvut.fel.nss.model;
 
-import cz.cvut.fel.nss.data.Product;
-import cz.cvut.fel.nss.model.dto.ProductDto;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-
-import java.math.BigDecimal;
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateStockRequest {
+    @NotNull(message="Stock address cannot be null")
     private String address;
 }

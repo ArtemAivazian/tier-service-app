@@ -1,10 +1,13 @@
 package cz.cvut.fel.nss.controller;
 
-import cz.cvut.fel.nss.data.Stock;
+import cz.cvut.fel.nss.dto.StockDto;
 import cz.cvut.fel.nss.model.CreateStockRequest;
-import cz.cvut.fel.nss.model.CreateStockResponse;
+import cz.cvut.fel.nss.model.StockResponse;
 import cz.cvut.fel.nss.service.StockService;
+import cz.cvut.fel.nss.service.impl.StockServiceImpl;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,19 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/stock")
 @AllArgsConstructor
 public class StocksController {
-
     private StockService stockService;
-//    @PostMapping
-//    public ResponseEntity<CreateStockResponse> createStock(@RequestBody CreateStockRequest request) {
-//        CreateStockResponse response = stockService.createStock(request);
-//        return ResponseEntity.status(HttpStatus.OK).body(response);
-//    }
+    private ModelMapper mapper;
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Stock> createStock(
-            @RequestBody CreateStockRequest request
+    public ResponseEntity<StockResponse> createStock(
+            @Valid @RequestBody CreateStockRequest request
     ) {
-        Stock savedStock = stockService.createStock(request);
-        return ResponseEntity.ok(savedStock);
+        StockDto stockDto = mapper.map(request, StockDto.class);
+        StockDto savedStock = stockService.createStock(stockDto);
+        StockResponse response = mapper.map(savedStock, StockResponse.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

@@ -1,6 +1,7 @@
 package cz.cvut.fel.nss.data;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class Order {
             generator = "order_sequence"
     )
     private Long orderId;
+//    @Column(nullable = false)
     private Long userId;
     @OneToMany(
             cascade = CascadeType.ALL
@@ -35,5 +37,6 @@ public class Order {
             referencedColumnName = "orderId",
             nullable = false
     )
+    @NotNull(message = "OrderProducts cannot be null")
     private List<OrderedProduct> orderedProducts;
 }

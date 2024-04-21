@@ -1,11 +1,14 @@
 package cz.cvut.fel.nss.controller;
 
 import cz.cvut.fel.nss.data.Product;
+import cz.cvut.fel.nss.exception.StockNotFoundException;
 import cz.cvut.fel.nss.model.CreateProductRequest;
 import cz.cvut.fel.nss.model.ProductResponse;
-import cz.cvut.fel.nss.model.dto.ProductDto;
+import cz.cvut.fel.nss.dto.ProductDto;
 import cz.cvut.fel.nss.service.ProductsService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,44 +20,52 @@ import java.util.Map;
 @RestController
 @RequestMapping("/product")
 @AllArgsConstructor
-public class  ProductsController {
-
+public class ProductsController {
     private final ProductsService productsService;
-    @PatchMapping("/{productId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<Product> patchProduct(
-            @PathVariable("productId") Long productId,
-            @RequestBody Map<String, Object> updates
-    ) {
-        Product patchedProduct = productsService.patchProduct(productId, updates);
-        return ResponseEntity.status(HttpStatus.OK).body(patchedProduct);
-    }
+    private final ModelMapper mapper;
+
+//    @PatchMapping("/{productId}")
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<Product> patchProduct(
+//            @PathVariable("productId") Long productId,
+//            @RequestBody Map<String, Object> updates
+//    ) {
+//        Product patchedProduct = productsService.patchProduct(productId, updates);
+//        return ResponseEntity.status(HttpStatus.OK).body(patchedProduct);
+//    }
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Product> createProduct(
-            @RequestBody CreateProductRequest request
-    ) {
-        Product product = productsService.createProduct(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(product);
+    public ResponseEntity<ProductResponse> createProduct(
+            @Valid @RequestBody CreateProductRequest request
+    ) throws StockNotFoundException {
+        ProductDto productDto = mapper.map(request, ProductDto.class);
+        ProductDto savedProduct = productsService.createProduct(productDto);
+        ProductResponse response = mapper.map(savedProduct, ProductResponse.class);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/all")
     @PreAuthorize("permitAll()")
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        List<ProductResponse> responses = productsService.findAllProducts();
+        List<ProductDto> productDtos = productsService.findAllProducts();
+        List<ProductResponse> responses = productDtos.stream()
+                .map(productDto -> mapper.map(productDto, ProductResponse.class))
+                .toList();
         return ResponseEntity.ok(responses);
     }
 
-
-    @GetMapping("/{orderId}")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<List<ProductResponse>> getProductsByOrderId(
-            @PathVariable("orderId") Long orderId
+    @GetMapping("/{name}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<ProductResponse> getProductByName(
+            @PathVariable("name") String name
     ) {
-        List<ProductResponse> responses  = productsService.getProductsByOrderId(orderId);
-        return ResponseEntity.ok(responses);
+        ProductDto productDto = productsService.findProductByName(name);
+        ProductResponse response = mapper.map(productDto, ProductResponse.class);
+        return ResponseEntity.ok(response);
     }
+
 }
 
 

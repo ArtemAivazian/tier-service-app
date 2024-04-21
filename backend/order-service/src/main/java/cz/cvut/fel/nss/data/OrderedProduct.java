@@ -1,6 +1,7 @@
 package cz.cvut.fel.nss.data;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderedProduct {
-
     @Id
     @SequenceGenerator(
             name = "ordered_product_sequence",
@@ -27,19 +27,12 @@ public class OrderedProduct {
             generator = "ordered_product_sequence"
     )
     private Long productId;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private BigDecimal price;
+    @Column(nullable = false)
     private Integer quantity;
+    @Column(nullable = false)
     private Long stockId;
-//    @ManyToOne(
-//            cascade = CascadeType.ALL,
-//            fetch = FetchType.LAZY
-//    )
-//    @JoinColumn(
-//            name = "order_id",
-//            referencedColumnName = "orderId",
-//            insertable = false,
-//            updatable = false
-//    )
-//    private Order order;
 }

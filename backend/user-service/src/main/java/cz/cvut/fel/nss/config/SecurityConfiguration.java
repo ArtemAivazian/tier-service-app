@@ -1,6 +1,6 @@
 package cz.cvut.fel.nss.config;
 
-import cz.cvut.fel.nss.service.AuthService;
+import cz.cvut.fel.nss.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,11 +21,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @AllArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfiguration {
-
-//    private final AuthenticationProvider authenticationProvider;
-//    private final JwtAuthFilter jwtAuthFilter;
-//    private final Environment env;
-    private final AuthService  authService;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final Environment environment;
@@ -36,34 +32,22 @@ public class SecurityConfiguration {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 
-        authenticationManagerBuilder.userDetailsService(authService)
+        authenticationManagerBuilder.userDetailsService(userService)
                 .passwordEncoder(passwordEncoder);
 
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
         AuthenticationFilter authenticationFilter =
-                new AuthenticationFilter(authService, authenticationManager, jwtService);
+                new AuthenticationFilter(userService, authenticationManager, jwtService);
         authenticationFilter.setFilterProcessesUrl("/users/authenticate");
 
-        http
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(req ->
-                    req
-                            .anyRequest()
-//                                //request to /auth only from api gateway
-//                                .access(new WebExpressionAuthorizationManager(
-//                                        "hasIpAddress('"+env.getProperty("gateway.ip")+"')"))
-                            .permitAll()
-            )
-
-            .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-            .addFilter(new AuthorizationFilter(authenticationManager, environment, jwtService))
-            .addFilter(authenticationFilter)
-            .authenticationManager(authenticationManager);
-//                .authenticationProvider(authenticationProvider)
-//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-
-        return http.build();
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                .addFilter(new AuthorizationFilter(authenticationManager, environment, jwtService))
+                .addFilter(authenticationFilter)
+                .authenticationManager(authenticationManager)
+                .build();
     }
 
 }

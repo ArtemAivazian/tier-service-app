@@ -1,6 +1,5 @@
 package cz.cvut.fel.nss.model;
 
-import cz.cvut.fel.nss.data.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

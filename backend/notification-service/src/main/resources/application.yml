@@ -1,0 +1,32 @@
+server:
+  port: ${PORT:0}
+
+# EUREKA
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8010/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+spring:
+  devtools:
+    restart:
+      enabled: true #automatically restart app after making changes
+  application:
+    name: notification-service
+
+  #KAFKA
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id:
+        - order-placed-notifications
+#        - order-failed-notifications
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"

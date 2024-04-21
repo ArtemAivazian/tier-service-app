@@ -32,15 +32,21 @@ spring:
 
   #KAFKA
   kafka:
-    bootstrap-servers: localhost:9092  # Use "kafka:9092" if running inside Docker network
+    consumer:
+      bootstrap-servers: localhost:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: order-placed-events
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
     producer:
+      bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    topic:
-      name: productUpdatedTopic
 
-gateway:
-  ip: 10.0.56.5
 
 token:
   secret: 9a2f8c4e6b0d71f3e8b925a45747f894a3d6bc70fa8d5e21a15a6d8c3b9a0e7c

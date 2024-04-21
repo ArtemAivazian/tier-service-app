@@ -8,14 +8,31 @@ import org.springframework.core.env.Environment;
 import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
-@AllArgsConstructor
 public class KafkaTopicConfig {
-    private Environment env;
     @Bean
-    public NewTopic orderPlacedTopic(){
+    public NewTopic orderPlacedTopicSync(){
         return TopicBuilder
-                .name(env.getProperty("spring.kafka.topic.name"))
+                .name("order-placed-topic-sync")
+                .partitions(1)
                 .build();
     }
+
+    @Bean
+    public NewTopic orderPlacedTopicAsync(){
+        return TopicBuilder
+                .name("order-placed-topic-async")
+                .partitions(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic orderFailedTopic(){
+        return TopicBuilder
+                .name("order-failed-topic")
+                .partitions(1)
+                .build();
+    }
+
+
 
 }

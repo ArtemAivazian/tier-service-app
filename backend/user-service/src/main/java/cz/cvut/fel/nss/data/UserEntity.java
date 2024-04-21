@@ -18,7 +18,15 @@ import java.util.Collection;
 public class UserEntity {
 
     @Id
-    @GeneratedValue
+    @SequenceGenerator(
+            name = "user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence"
+    )
     private Long userId;
 
     @Column(nullable=false, length=50)

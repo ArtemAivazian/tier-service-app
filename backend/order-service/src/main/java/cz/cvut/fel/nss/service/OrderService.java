@@ -1,14 +1,13 @@
 package cz.cvut.fel.nss.service;
 
-import cz.cvut.fel.nss.model.OrderDto;
+import cz.cvut.fel.nss.dto.OrderDto;
 import cz.cvut.fel.nss.model.OrderResponse;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public interface OrderService {
-    OrderResponse getOrder(Long orderId);
-
-    List<OrderResponse> getUserOrders(String userId);
-    OrderDto placeOrder(OrderDto orderRequestDto);
+    List<OrderDto> getUserOrders(String userId);
+    OrderDto placeOrder(OrderDto orderRequestDto, String authorization);
 
 }

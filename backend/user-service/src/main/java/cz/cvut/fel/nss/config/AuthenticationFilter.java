@@ -2,13 +2,12 @@ package cz.cvut.fel.nss.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.fel.nss.model.AuthenticationRequest;
-import cz.cvut.fel.nss.model.UserDto;
-import cz.cvut.fel.nss.service.AuthService;
+import cz.cvut.fel.nss.dto.UserDto;
+import cz.cvut.fel.nss.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,16 +20,16 @@ import java.util.ArrayList;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final AuthService authService;
+    private final UserService userService;
     private final JwtService jwtService;
 
     public AuthenticationFilter(
-            AuthService authService,
+            UserService userService,
             AuthenticationManager authenticationManager,
             JwtService jwtService
     ) {
         super(authenticationManager);
-        this.authService = authService;
+        this.userService = userService;
         this.jwtService = jwtService;
     }
 
@@ -63,7 +62,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     ) throws IOException, ServletException {
 
         String userName = ((User) auth.getPrincipal()).getUsername();
-        UserDto userDetails = authService.getUserDetailsByEmail(userName);
+        UserDto userDetails = userService.getUserDetailsByEmail(userName);
 
         String token = jwtService.generateToken(userDetails);
 
