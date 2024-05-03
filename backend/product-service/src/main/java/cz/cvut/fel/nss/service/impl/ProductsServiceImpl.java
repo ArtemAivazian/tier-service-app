@@ -14,6 +14,7 @@ import cz.cvut.fel.nss.service.ProductsService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -45,6 +46,7 @@ public class ProductsServiceImpl implements ProductsService {
     }
 
     @Override
+    @Cacheable(value = "productServiceCache", key = "#name")
     public ProductDto findProductByName(String name) {
         Product product = productRepository.findByName(name);
         ProductDto productDto = Mapper.mapToProductDto(product);

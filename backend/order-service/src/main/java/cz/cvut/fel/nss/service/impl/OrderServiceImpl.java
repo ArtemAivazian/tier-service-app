@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
+    @Cacheable(value = "orderServiceCache", key = "#userId")
     public List<OrderDto> getUserOrders(String userId) {
         List<Order> orders = orderRepository.getOrdersByUserId(Long.valueOf(userId));
 
@@ -49,6 +52,21 @@ public class OrderServiceImpl implements OrderService {
                         orderRepository.getOrderedProductsByOrderId(orderDto.getOrderId()))
         );
         return orderDtos;
+    }
+
+    @Override
+    public List<OrderDto> getAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream()
+                .map(order -> mapper.map(order, OrderDto.class))
+                .toList();
+    }
+
+
+
+    @CacheEvict(value = "orderServiceCache", allEntries = true)
+    public void clearAllCache() {
+
     }
 
     @Override

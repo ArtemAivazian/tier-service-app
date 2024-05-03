@@ -9,5 +9,6 @@ import java.util.concurrent.ExecutionException;
 public interface OrderService {
     List<OrderDto> getUserOrders(String userId);
     OrderDto placeOrder(OrderDto orderRequestDto, String authorization);
+    List<OrderDto> getAllOrders();
 
 }

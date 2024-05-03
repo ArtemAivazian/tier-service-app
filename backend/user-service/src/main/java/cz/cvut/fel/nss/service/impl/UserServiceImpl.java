@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -52,6 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "userServiceCache", key = "#userId")
     public UserDto getUserByUserId(String userId, String authorization) {
         UserEntity userEntity = userRepository.findByUserId(Long.valueOf(userId));
         if(userEntity == null) throw new UsernameNotFoundException("User not found by id " + userId);
