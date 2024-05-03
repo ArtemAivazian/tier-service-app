@@ -1,0 +1,75 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+#      discovery:
+#        locator:
+#          enabled: true
+#          lower-case-service-id: true
+      routes:
+        #user
+        - id: user-service-auth-register
+          uri: lb://user-service #app name after lb://
+          predicates:
+            - Path=/user-service/users/register
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /${segment}
+        - id: user-service-auth-login
+          uri: lb://user-service
+          predicates:
+            - Path=/user-service/users/authenticate
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /${segment}
+        - id: user-service-get-user
+          uri: lb://user-service
+          predicates:
+            - Path=/user-service/users/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /${segment}
+          #product
+        - id: product-service-create
+          uri: lb://product-service
+          predicates:
+            - Path=/product-service/product/**
+            - Method=POST,GET,PATCH
+#            - Header=Authorization, Bearer (.*)
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/product-service/(?<segment>.*), /${segment}
+        #stock
+        - id: product-service-create-stock
+          uri: lb://product-service
+          predicates:
+            - Path=/product-service/stock
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/product-service/(?<segment>.*), /${segment}
+        #order
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/order-service/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/order-service/(?<segment>.*), /${segment}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://test:test@localhost:8010/eureka
+
+token:
+  secret: 9a2f8c4e6b0d71f3e8b925a45747f894a3d6bc70fa8d5e21a15a6d8c3b9a0e7c
+
+

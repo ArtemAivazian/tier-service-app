@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: discovery-service
+  security:
+    user:
+      name: "test"
+      password: "test"
+
+server:
+  port: 8010
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false #only only eureka server
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka

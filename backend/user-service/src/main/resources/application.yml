@@ -1,0 +1,60 @@
+server:
+  port: ${PORT:0} #authomatically assigned port number is 0 if have not been provided PORT form cli
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://test:test@localhost:8010/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+
+spring:
+  devtools:
+    restart:
+      enabled: true #automatically restart app after making changes
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:postgresql://localhost:5442/users
+    username: "admin"
+    password: "123"
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#  flyway:
+#    enabled: true
+#    locations: classpath:db/migration
+#    baseline-on-migrate: true
+#    out-of-order: true
+
+
+
+token:
+  secret: 9a2f8c4e6b0d71f3e8b925a45747f894a3d6bc70fa8d5e21a15a6d8c3b9a0e7c
+  jwt_expiration_time: 86400000
+
+authorization:
+  token:
+    header:
+      name: Authorization
+      prefix: Bearer
+
+logging:
+  level:
+    cz:
+      cvut:
+        fel:
+          nss:
+            feignClient:
+              OrdersServiceClient: DEBUG
+    org:
+      springframework:
+        security: TRACE
