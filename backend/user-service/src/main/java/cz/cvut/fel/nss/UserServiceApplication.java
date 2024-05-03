@@ -1,6 +1,7 @@
 package cz.cvut.fel.nss;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.fel.nss.exception.FeignErrorDecoder;
 import feign.Logger;
 import org.modelmapper.ModelMapper;
