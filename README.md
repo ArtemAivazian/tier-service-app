@@ -15,8 +15,10 @@
 - **Use of Interceptors:** (at least one class) - for example, for logging (receive a request and log it) *(To Do)*
 - **Deployment on a production server:** For example, Heroku *(To Do)*
 - **Use of Elasticsearch:** *(To Do)*
-- **Using at least 5 design patterns:** *(???, needs clarification)*
+- **Using at least 5 design patterns:** *(Builder, DTO, DAO, singleton - configuration, ...)*
 - **Cloud services (Azure, AWS):** *(To Do)*
+opravit mapperz at jich neni tolik ...
 
 #### Diagrams:
 [Project Diagrams on Wiki](https://gitlab.fel.cvut.cz/aivazart/tierserviceapp/-/wikis/home)
+
