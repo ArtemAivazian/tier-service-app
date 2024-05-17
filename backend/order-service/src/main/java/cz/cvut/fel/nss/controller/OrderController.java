@@ -46,7 +46,7 @@ public class OrderController {
     public ResponseEntity<Object> placeOrder(
             @Valid @RequestBody OrderRequest orderRequest,
             @RequestHeader("Authorization") String authorization
-    ) throws Exception {
+    ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getPrincipal().toString();
         orderRequest.setUserId(Long.valueOf(userId));
