@@ -1,24 +1,36 @@
-### Common Requirements:
+# Přehled projektu
 
-#### Completed:
-- **Select suitable technologies and languages:** Java/SpringBoot, Java, C#, etc. Selected SpringBoot *(Completed)*
-- **README in Git with description:** What is completed and where the functionality is located *(Completed)*
-- **Use of a common DB:** (relational or graph). Relation Selected *(Completed)*
-- **Use of cache:** Selected Spring Cache *(Completed)*
-- **Use of messaging principle:** Selected Kafka *(Completed)*
-- **Application will be secured by:** Selected JWT Token *(Completed)*
-- **Use of one of the technologies:** SOAP, REST, GraphQL, Java RMI, Corba, XML-RPC. REST is using *(Completed)*
-- **Selection of suitable architecture:** Event base, pipe and filter, etc. Event Base is using *(Completed)*
-- **For each team member, 2 UC add link to wiki:** *(Completed)*
+### Společné požadavky:
 
-#### To Do:
-- **Use of Interceptors:** (at least one class) - for example, for logging (receive a request and log it) *(To Do)*
-- **Deployment on a production server:** For example, Heroku *(To Do)*
-- **Use of Elasticsearch:** *(To Do)*
-- **Using at least 5 design patterns:** *(Builder, DTO, DAO, singleton - configuration, ...)*
-- **Cloud services (Azure, AWS):** *(To Do)*
-opravit mapperz at jich neni tolik ...
+#### Hotovo:
+- **Výběr vhodných technologií a jazyků:** Java/SpringBoot, Java, C#, atd.
+  - **Vybráno:** SpringBoot *(Hotovo)*
+- **README v Gitu s popisem:** Co je hotovo a kde se funkčnost nachází
+  - *(Hotovo)*
+- **Použití společné DB:** (relační nebo grafová).
+  - **Vybráno:** Relační *(Hotovo)*
+- **Použití cache:**
+  - **Vybráno:** Spring Cache *(Hotovo)*
+- **Použití principu zpráv:**
+  - **Vybráno:** Kafka *(Hotovo)*
+- **Aplikace bude zabezpečena pomocí:**
+  - **Vybráno:** JWT Token *(Hotovo)*
+- **Použití jedné z technologií:** SOAP, REST, GraphQL, Java RMI, Corba, XML-RPC.
+  - **Vybráno:** REST *(Hotovo)*
+- **Výběr vhodné architektury:** Event base, pipe and filter, atd.
+  - **Vybráno:** Event Base *(Hotovo)*
+- **Pro každého člena týmu, 2 UC přidejte odkaz na wiki:**
+  - *(Hotovo)*
+- **Použití interceptorů:** (alespoň jedna třída) - například pro logování (příjem požadavku a jeho zaznamenání)
+  - *(Hotovo)*
+- **Použití alespoň 5 design patternů:**
+  - *(Builder, DTO, DAO, Singleton - Konfigurace, Interceptor pro sběr)*(K dokončení)*
 
-#### Diagrams:
-[Project Diagrams on Wiki](https://gitlab.fel.cvut.cz/aivazart/tierserviceapp/-/wikis/home)
+#### K dokončení:
+- **Nasazení na produkční server:** Například Heroku
+  - *(Není)*
+- **Použití Elasticsearch:**
+  - *(Není)*
 
+#### Diagramy:
+[Diagramy projektu na Wiki](https://gitlab.fel.cvut.cz/aivazart/tierserviceapp/-/wikis/pages)
