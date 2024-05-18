@@ -24,27 +24,4 @@ import static cz.cvut.fel.nss.mapper.Mapper.mapToProduct;
 @Slf4j
 @AllArgsConstructor
 public class CacheConfig {
-//    private final CacheManager cacheManager;
-//    private final ProductsService productsService;
-//    private final StockRepository stockRepository;
-//    private static final Logger LOGGER = LoggerFactory.getLogger(CacheConfig.class);
-//
-//    /**
-//     * Preloading cache at the start of the app
-//     */
-//    @PostConstruct
-//    public void preloadCache() {
-//        Cache cache = cacheManager.getCache("productServiceCache");
-//        if (cache != null) {
-//            LOGGER.info("*********** Initializing cache");
-//
-//            List<ProductDto> productsDtos = productsService.findAllProducts();
-//
-//            productsDtos.stream()
-//                    .map(productDto -> mapToProduct(productDto, stockRepository.findByStockId(productDto.getStockId())))
-//                    .forEach(
-//                            product -> cache.put(product.getProductId(), product)
-//                    );
-//        }
-//    }
 }

@@ -24,16 +24,6 @@ public class ProductsController {
     private final ProductsService productsService;
     private final ModelMapper mapper;
 
-//    @PatchMapping("/{productId}")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<Product> patchProduct(
-//            @PathVariable("productId") Long productId,
-//            @RequestBody Map<String, Object> updates
-//    ) {
-//        Product patchedProduct = productsService.patchProduct(productId, updates);
-//        return ResponseEntity.status(HttpStatus.OK).body(patchedProduct);
-//    }
-
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductResponse> createProduct(

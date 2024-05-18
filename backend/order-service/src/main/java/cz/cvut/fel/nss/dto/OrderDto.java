@@ -12,8 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDto implements Serializable {
-
     private Long orderId;
     private Long userId;
-    private List<OrderedProduct> orderedProducts;
+    private transient List<OrderedProduct> orderedProducts;
 }

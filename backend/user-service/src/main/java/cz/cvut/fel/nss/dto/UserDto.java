@@ -24,7 +24,7 @@ public class UserDto implements Serializable {
     private String password;
     private String encryptedPassword;
     private Role role;
-    private List<OrderResponse> orders;
+    private transient List<OrderResponse> orders;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();

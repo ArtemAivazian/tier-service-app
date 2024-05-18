@@ -44,48 +44,4 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(returnValue);
     }
 
-//    @PutMapping(value="/{userId}")
-//    @PostAuthorize("returnObject.body.email == authentication.name")
-//    public ResponseEntity<UserResponse> updateUser(
-//            @PathVariable("userId") String userId,
-//            @RequestBody UserRequest userRequest
-//    ) {
-//        ModelMapper mapper = new ModelMapper();
-//        UserDto updatedUserDto = userService.updateUser(userId, userRequest);
-//        UserResponse returnValue = mapper.map(updatedUserDto, UserResponse.class);
-//
-//        return ResponseEntity.ok().body(returnValue);
-//    }
-
-    //    @GetMapping("/all")
-//    public ResponseEntity<List<UserResponse>> getAllUsers() {
-//        ModelMapper mapper = new ModelMapper();
-//        List<UserDto> userDtos = userService.getAllUsers();
-//        List<UserResponse> responses = userDtos.stream()
-//                .map(userDto -> mapper.map(userDto, UserResponse.class))
-//                .toList();
-//        return ResponseEntity.status(HttpStatus.OK).body(responses);
-//    }
-//
-//    @GetMapping(value="/{userId}")
-//    public ResponseEntity<UserResponse> getUser(
-//            @PathVariable("userId") String userId
-//    ) {
-//
-//        UserDto userDto = userService.getUserByUserId(userId);
-//        UserResponse returnValue = new ModelMapper().map(userDto, UserResponse.class);
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(returnValue);
-//    }
-//
-//    @DeleteMapping("/{userId}")
-//    public ResponseEntity deleteUser(
-//            @PathVariable("userId") String userId
-//    ) {
-//        UserDto user = userService.getUserByUserId(userId);
-//        if (user == null) return ResponseEntity.notFound().build();
-//        userService.deleteByUserId(userId);
-//        return ResponseEntity.ok().build();
-//    }
-
 }

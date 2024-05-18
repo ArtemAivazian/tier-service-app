@@ -5,10 +5,6 @@ spring:
     name: api-gateway
   cloud:
     gateway:
-#      discovery:
-#        locator:
-#          enabled: true
-#          lower-case-service-id: true
       routes:
         #user
         - id: user-service-auth-register
@@ -41,7 +37,6 @@ spring:
           predicates:
             - Path=/product-service/product/**
             - Method=POST,GET,PATCH
-#            - Header=Authorization, Bearer (.*)
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/product-service/(?<segment>.*), /${segment}

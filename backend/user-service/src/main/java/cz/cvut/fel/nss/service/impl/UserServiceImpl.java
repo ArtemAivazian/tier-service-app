@@ -79,30 +79,5 @@ public class UserServiceImpl implements UserService {
                     userEntity.getAuthorities()
                 );
     }
-
-
-    //    @Override
-//    public UserDto getUserByUserId(String userId) {
-//        UserEntity userEntity = userRepository.findByUserId(userId);
-//        if(userEntity == null) throw new UsernameNotFoundException("User not found");
-//
-//        UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
-//
-//        return userDto;
-//    }
-//
-//    @Override
-//    public List<UserDto> getAllUsers() {
-//        ModelMapper mapper = new ModelMapper();
-//        List<UserEntity> userEntities = userRepository.findAll();
-//        return userEntities.stream()
-//                .map(user -> mapper.map(user, UserDto.class))
-//                .toList();
-//    }
-//
-//    @Override
-//    public void deleteByUserId(String userId) {
-//        userRepository.deleteByUserId(userId);
-//    }
 }
 

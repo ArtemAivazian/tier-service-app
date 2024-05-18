@@ -25,7 +25,6 @@ import java.util.List;
 public class OrderPlacedEventHandler {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     private ProductRepository productRepository;
-//    private final KafkaTemplate<String, OrderFailedEvent> kafkaTemplate;
     @KafkaHandler
     public void handle(OrderPlacedEvent event) {
         LOGGER.info("Received a new event: " + event);
@@ -33,20 +32,10 @@ public class OrderPlacedEventHandler {
         orderedProducts.forEach(orderedProduct -> {
             var product = productRepository.findByName(orderedProduct.getName());
             if (product == null) {
-//                //TO-DO: send OrderFailedEvent
-//                OrderFailedEvent orderFailedEvent = new OrderFailedEvent();
-//                orderFailedEvent.setOrderId(event.getOrderId());
-//                orderFailedEvent.setUserId(event.getUserId());
-//                kafkaTemplate.send("order-failed-topic", event.getOrderId().toString(), orderFailedEvent);
                 throw new ProductNotFoundException(
                         orderedProduct.getName() + " is not found.");
             }
             if (product.getQuantity() < orderedProduct.getQuantity()) {
-//                //TO-DO: send OrderFailedEvent
-//                OrderFailedEvent orderFailedEvent = new OrderFailedEvent();
-//                orderFailedEvent.setOrderId(event.getOrderId());
-//                orderFailedEvent.setUserId(event.getUserId());
-//                kafkaTemplate.send("order-failed-topic", event.getOrderId().toString(), orderFailedEvent);
                 throw new InsufficientAmountOfProductException(
                         "Insufficient amount of product " + orderedProduct.getName());
             }
