@@ -1,5 +1,6 @@
 package cz.cvut.fel.nss.event;
 
+import cz.cvut.fel.nss.dto.OrderedProductDto;
 import cz.cvut.fel.nss.shared.OrderedProduct;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +14,6 @@ import java.util.List;
 public class OrderPlacedEvent {
     private Long orderId;
     private Long userId;
-    private List<OrderedProduct> orderedProducts;
+    private List<OrderedProductDto> orderedProducts;
 
 }

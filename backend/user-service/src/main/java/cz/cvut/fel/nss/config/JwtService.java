@@ -1,6 +1,6 @@
 package cz.cvut.fel.nss.config;
 
-import cz.cvut.fel.nss.dto.UserDto;
+import cz.cvut.fel.nss.dto.UserLdo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,7 +21,7 @@ import java.util.function.Function;
 @AllArgsConstructor
 public class JwtService {
     private Environment env;
-    public String generateToken(UserDto user) {
+    public String generateToken(UserLdo user) {
         return Jwts.builder()
                 .setSubject(user.getUserId().toString())
                 .claim("authorities", populateAuthorities(user.getAuthorities()))
@@ -77,11 +77,5 @@ public class JwtService {
                 .map(SimpleGrantedAuthority::new)
                 .toList();
     }
-
-
-//    public boolean isTokenValid(String token, UserDetails userDetails) {
-//        final String username = extractUsername(token);
-//        return (username.equals(userDetails.getUsername()));
-//    }
 
 }

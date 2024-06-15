@@ -1,10 +1,8 @@
 package cz.cvut.fel.nss.controller;
 
-import cz.cvut.fel.nss.data.Product;
 import cz.cvut.fel.nss.exception.StockNotFoundException;
-import cz.cvut.fel.nss.model.CreateProductRequest;
-import cz.cvut.fel.nss.model.ProductResponse;
 import cz.cvut.fel.nss.dto.ProductDto;
+import cz.cvut.fel.nss.dto.ProductLdo;
 import cz.cvut.fel.nss.service.ProductsService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -15,7 +13,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/product")
@@ -24,46 +21,37 @@ public class ProductsController {
     private final ProductsService productsService;
     private final ModelMapper mapper;
 
-//    @PatchMapping("/{productId}")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<Product> patchProduct(
-//            @PathVariable("productId") Long productId,
-//            @RequestBody Map<String, Object> updates
-//    ) {
-//        Product patchedProduct = productsService.patchProduct(productId, updates);
-//        return ResponseEntity.status(HttpStatus.OK).body(patchedProduct);
-//    }
-
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProductResponse> createProduct(
-            @Valid @RequestBody CreateProductRequest request
+    public ResponseEntity<ProductDto> createProduct(
+            @Valid @RequestBody ProductDto productRequest
     ) throws StockNotFoundException {
-        ProductDto productDto = mapper.map(request, ProductDto.class);
-        ProductDto savedProduct = productsService.createProduct(productDto);
-        ProductResponse response = mapper.map(savedProduct, ProductResponse.class);
+        ProductLdo productLdo = mapper.map(productRequest, ProductLdo.class);
+        ProductLdo savedProduct = productsService.createProduct(productLdo);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(mapper.map(savedProduct, ProductDto.class));
     }
 
     @GetMapping("/all")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        List<ProductDto> productDtos = productsService.findAllProducts();
-        List<ProductResponse> responses = productDtos.stream()
-                .map(productDto -> mapper.map(productDto, ProductResponse.class))
-                .toList();
-        return ResponseEntity.ok(responses);
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
+        List<ProductLdo> allProducts = productsService.findAllProducts();
+
+        return ResponseEntity.ok(allProducts.stream()
+                .map(productDto -> mapper.map(productDto, ProductDto.class))
+                .toList());
     }
 
     @GetMapping("/{name}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<ProductResponse> getProductByName(
+    public ResponseEntity<ProductDto> getProductByName(
             @PathVariable("name") String name
     ) {
-        ProductDto productDto = productsService.findProductByName(name);
-        ProductResponse response = mapper.map(productDto, ProductResponse.class);
-        return ResponseEntity.ok(response);
+        ProductLdo productLdo = productsService.findProductByName(name);
+
+        return ResponseEntity.ok(mapper.map(productLdo, ProductDto.class));
     }
 
 }

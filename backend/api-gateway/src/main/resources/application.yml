@@ -11,7 +11,7 @@ spring:
 #          lower-case-service-id: true
       routes:
         #user
-        - id: user-service-auth-register
+        - id: user-service-register
           uri: lb://user-service #app name after lb://
           predicates:
             - Path=/user-service/users/register
@@ -19,14 +19,14 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /${segment}
-        - id: user-service-auth-login
-          uri: lb://user-service
+        - id: auth-service-authenticate
+          uri: lb://auth-service
           predicates:
-            - Path=/user-service/users/authenticate
+            - Path=/auth-service/auth/authenticate
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /${segment}
+            - RewritePath=/auth-service/(?<segment>.*), /${segment}
         - id: user-service-get-user
           uri: lb://user-service
           predicates:
@@ -41,7 +41,6 @@ spring:
           predicates:
             - Path=/product-service/product/**
             - Method=POST,GET,PATCH
-#            - Header=Authorization, Bearer (.*)
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/product-service/(?<segment>.*), /${segment}

@@ -1,7 +1,7 @@
 package cz.cvut.fel.nss.service;
 
-import cz.cvut.fel.nss.dto.StockDto;
+import cz.cvut.fel.nss.dto.StockLdo;
 
 public interface StockService {
-    StockDto createStock(StockDto stockDto);
+    StockLdo createStock(StockLdo stockLdo);
 }

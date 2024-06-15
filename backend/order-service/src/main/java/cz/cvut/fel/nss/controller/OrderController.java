@@ -1,7 +1,7 @@
 package cz.cvut.fel.nss.controller;
 
 import cz.cvut.fel.nss.dto.OrderDto;
-import cz.cvut.fel.nss.model.*;
+import cz.cvut.fel.nss.dto.OrderLdo;
 import cz.cvut.fel.nss.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -28,35 +29,34 @@ public class OrderController {
 
     @GetMapping("/users/{userId}/orders")
     @PreAuthorize("(principal == #userId) and hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<List<OrderResponse>> userOrders(
+    public ResponseEntity<List<OrderDto>> userOrders(
             @PathVariable("userId") String userId
     ) {
-        List<OrderDto> orderDtos = orderService.getUserOrders(userId);
+        List<OrderLdo> userOrders = orderService.getUserOrders(userId);
 
-        List<OrderResponse> response = orderDtos.stream()
-                .map(orderDto -> mapper.map(orderDto, OrderResponse.class))
-                .toList();
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                userOrders.stream()
+                .map(orderLdo -> mapper.map(orderLdo, OrderDto.class))
+                .toList()
+        );
 
     }
 
     @PostMapping("/place")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Object> placeOrder(
-            @Valid @RequestBody OrderRequest orderRequest,
+            @Valid @RequestBody OrderDto orderRequest,
             @RequestHeader("Authorization") String authorization
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getPrincipal().toString();
         orderRequest.setUserId(Long.valueOf(userId));
 
+        OrderLdo orderLdo = mapper.map(orderRequest, OrderLdo.class);
+        OrderLdo placedOrder = orderService.placeOrder(orderLdo, authorization);
 
-        OrderDto orderDto = mapper.map(orderRequest, OrderDto.class);
-        OrderDto placedOrder;
-        placedOrder = orderService.placeOrder(orderDto, authorization);
-
-        OrderResponse orderResponse = mapper.map(placedOrder, OrderResponse.class);
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                mapper.map(placedOrder, OrderDto.class)
+        );
     }
 }

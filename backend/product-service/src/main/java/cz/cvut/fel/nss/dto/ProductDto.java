@@ -1,23 +1,26 @@
 package cz.cvut.fel.nss.dto;
 
-import cz.cvut.fel.nss.data.Stock;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class ProductDto implements Serializable {
-    private static final long serialVersionUID = -4280373382223640333L;
+public class ProductDto {
     private Long productId;
+    @NotNull(message="Product name cannot be null")
     private String name;
+    @NotNull(message="Product price cannot be null")
     private BigDecimal price;
+    @NotNull(message="Product quantity cannot be null")
     private Integer quantity;
+    @NotNull(message="Product stock id cannot be null")
     private Long stockId;
+
 }

@@ -1,10 +1,8 @@
 package cz.cvut.fel.nss.controller;
 
+import cz.cvut.fel.nss.dto.StockLdo;
 import cz.cvut.fel.nss.dto.StockDto;
-import cz.cvut.fel.nss.model.CreateStockRequest;
-import cz.cvut.fel.nss.model.StockResponse;
 import cz.cvut.fel.nss.service.StockService;
-import cz.cvut.fel.nss.service.impl.StockServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -25,12 +23,14 @@ public class StocksController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<StockResponse> createStock(
-            @Valid @RequestBody CreateStockRequest request
+    public ResponseEntity<StockDto> createStock(
+            @Valid @RequestBody StockDto request
     ) {
-        StockDto stockDto = mapper.map(request, StockDto.class);
-        StockDto savedStock = stockService.createStock(stockDto);
-        StockResponse response = mapper.map(savedStock, StockResponse.class);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        StockLdo stockLdo = mapper.map(request, StockLdo.class);
+        StockLdo savedStock = stockService.createStock(stockLdo);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(mapper.map(savedStock, StockDto.class));
     }
 }

@@ -1,16 +1,10 @@
 package cz.cvut.fel.nss;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import cz.cvut.fel.nss.data.Role;
 import cz.cvut.fel.nss.dto.UserDto;
-import cz.cvut.fel.nss.feignClient.OrdersServiceClient;
-import cz.cvut.fel.nss.model.RegisterRequest;
-import cz.cvut.fel.nss.repository.UserRepository;
-import cz.cvut.fel.nss.service.UserService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,10 +19,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.utility.DockerImageName;
-
-import java.util.ArrayList;
-
-import static org.mockito.Mockito.*;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -62,7 +52,7 @@ public class UserServiceApplicationTests {
 
     @Test
     public void shouldRegisterUser() throws Exception {
-        RegisterRequest registerRequest = getRegisterRequest();
+        UserDto registerRequest = getRegisterRequest();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -103,8 +93,8 @@ public class UserServiceApplicationTests {
 
 
 
-    private RegisterRequest getRegisterRequest() {
-        return RegisterRequest.builder()
+    private UserDto getRegisterRequest() {
+        return UserDto.builder()
                 .firstName("Anthony")
                 .lastName("John")
                 .email("anthony1986@gmail.com")
