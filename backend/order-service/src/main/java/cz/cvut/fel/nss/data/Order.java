@@ -27,7 +27,7 @@ public class Order {
             generator = "order_sequence"
     )
     private Long orderId;
-//    @Column(nullable = false)
+
     private Long userId;
     @OneToMany(
             cascade = CascadeType.ALL

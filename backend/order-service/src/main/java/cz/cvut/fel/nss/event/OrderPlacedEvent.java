@@ -1,7 +1,6 @@
 package cz.cvut.fel.nss.event;
 
 import cz.cvut.fel.nss.dto.OrderedProductDto;
-import cz.cvut.fel.nss.shared.OrderedProduct;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

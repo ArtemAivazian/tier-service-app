@@ -13,6 +13,7 @@ public class FeignErrorDecoder implements ErrorDecoder {
             case INTERNAL_SERVER_ERROR:
                 if (methodKey.contains("getProduct"))
                     return new ProductNotFoundException("Product is not found.");
+                break;
             case NOT_FOUND:
                 return new NotFoundException(status, "Uri to Product Service endpoint getProductByName is incorrect");
             case SERVICE_UNAVAILABLE:
@@ -20,5 +21,6 @@ public class FeignErrorDecoder implements ErrorDecoder {
             default:
                 return new Exception("Unexpected error occurred: " + response.reason());
         }
+        return null;
     }
 }

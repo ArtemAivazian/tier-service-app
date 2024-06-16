@@ -10,7 +10,7 @@ import cz.cvut.fel.nss.feign.ProductServiceClient;
 import cz.cvut.fel.nss.event.OrderPlacedEvent;
 import cz.cvut.fel.nss.repository.OrderRepository;
 import cz.cvut.fel.nss.service.OrderService;
-import cz.cvut.fel.nss.shared.ProductResponse;
+import cz.cvut.fel.nss.shared.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -65,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
         //VALIDATE ORDERED PRODUCTS
         List<OrderedProduct> orderedProducts = orderRequest.getOrderedProducts();
         orderedProducts.forEach(orderedProduct -> {
-            ProductResponse product = productServiceClient.getProductByName(orderedProduct.getName(), authorization);
+            ProductDto product = productServiceClient.getProductByName(orderedProduct.getName(), authorization);
             if (product.getQuantity() < orderedProduct.getQuantity()) {
                 throw new InsufficientAmountOfProductException(
                         "Insufficient amount of product " + orderedProduct.getName());

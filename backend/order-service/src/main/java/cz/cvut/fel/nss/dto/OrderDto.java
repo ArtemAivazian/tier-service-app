@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDto {
-
     private Long userId;
     private Long orderId;
     @NotNull(message = "OrderedProducts cannot be null")
