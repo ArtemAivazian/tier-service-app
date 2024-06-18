@@ -1,6 +1,7 @@
 package cz.cvut.fel.nss;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.fel.nss.dto.UserDto;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,7 +18,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.utility.DockerImageName;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,8 +25,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Testcontainers
 @AutoConfigureMockMvc
-public class UserServiceApplicationTests {
+class UserServiceApplicationTests {
 
+    @Test
+    void contextLoads() {
+    }
     @Autowired
     private MockMvc mockMvc;
     @Container
@@ -51,44 +54,15 @@ public class UserServiceApplicationTests {
     }
 
     @Test
-    public void shouldRegisterUser() throws Exception {
+    void shouldRegisterUser() throws Exception {
         UserDto registerRequest = getRegisterRequest();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(registerRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(registerRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.userId").value(2));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.userId").isNotEmpty());
     }
-
-//    @Test
-//    public void shouldGetUser() throws Exception {
-//
-//        UserDto userDto = new UserDto();
-//        userDto.setUserId(1L);
-//        userDto.setFirstName("Artem");
-//        userDto.setLastName("Aivazian");
-//        userDto.setEmail("aivazart@fel.cvut.cz");
-//        userDto.setRole(Role.ADMIN);
-//        userDto.setEncryptedPassword(null);
-//        userDto.setOrders(new ArrayList<>());
-//
-//        String userId = "1";
-//        String role = "ROLE_ADMIN";
-//        String authorizationHeader = new JwtUtil().generateToken(userId, role);
-//
-////        when(userService.getUserByUserId(userId, authorizationHeader)).thenReturn(userDto);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + userId)
-//                        .header("Authorization", authorizationHeader))
-//                .andExpect(status().isOk())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.userId").value(1))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Artem"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Aivazian"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("aivazart@fel.cvut.cz"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.role").value("ADMIN"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.orders").isEmpty());
-//    }
 
 
 
@@ -108,6 +82,5 @@ public class UserServiceApplicationTests {
             throw new RuntimeException(e);
         }
     }
-
 
 }

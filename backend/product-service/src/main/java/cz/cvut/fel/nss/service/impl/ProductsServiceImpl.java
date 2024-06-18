@@ -9,6 +9,7 @@ import cz.cvut.fel.nss.repository.ProductRepository;
 import cz.cvut.fel.nss.repository.StockRepository;
 import cz.cvut.fel.nss.service.ProductsService;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -20,15 +21,22 @@ public class ProductsServiceImpl implements ProductsService {
     private final ProductRepository productRepository;
     private final StockRepository stockRepository;
 
+    @CacheEvict(value = "products", key = "#productLdo.name")
     public ProductLdo createProduct(ProductLdo productLdo) throws StockNotFoundException {
         Stock stock = stockRepository.findByStockId(productLdo.getStockId());
         if (stock == null) throw new StockNotFoundException("Stock is not found by id " + productLdo.getStockId() );
 
-        Product product = Mapper.mapToProduct(productLdo, stock);
-
-        Product savedProduct = productRepository.save(product);
-
-        return Mapper.mapToProductDto(savedProduct);
+        Product existingProduct = productRepository.findByName(productLdo.getName());
+        //merging products, if exist
+        if (existingProduct != null) {
+            existingProduct.setQuantity(existingProduct.getQuantity() + productLdo.getQuantity());
+            Product updatedProduct = productRepository.save(existingProduct);
+            return Mapper.mapToProductDto(updatedProduct);
+        } else {
+            Product product = Mapper.mapToProduct(productLdo, stock);
+            Product savedProduct = productRepository.save(product);
+            return Mapper.mapToProductDto(savedProduct);
+        }
     }
 
     public List<ProductLdo> findAllProducts() {

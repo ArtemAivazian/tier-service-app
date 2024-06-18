@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
 
-    @CacheEvict(value = "users", key = "#userDetails.userId")
+    @CacheEvict(value = "users", key = "#result.userId")
     public UserLdo register(UserLdo userDetails) {
 
         userDetails.setEncryptedPassword(passwordEncoder.encode(userDetails.getPassword()));
