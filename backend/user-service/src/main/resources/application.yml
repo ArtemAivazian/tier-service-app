@@ -47,6 +47,8 @@ authorization:
       prefix: Bearer
 
 logging:
+  file:
+    name: /Users/artemayvazyan/Desktop/tierserviceapp/backend/user-service/user-service.log
   level:
     cz:
       cvut:

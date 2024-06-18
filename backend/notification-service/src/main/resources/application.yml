@@ -30,3 +30,6 @@ spring:
           json:
             trusted:
               packages: "*"
+logging:
+  file:
+    name: /Users/artemayvazyan/Desktop/tierserviceapp/backend/notification-service/notification-service.log

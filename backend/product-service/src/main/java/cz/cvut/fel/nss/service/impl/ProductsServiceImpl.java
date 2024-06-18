@@ -39,7 +39,7 @@ public class ProductsServiceImpl implements ProductsService {
     }
 
     @Override
-    @Cacheable(value = "productServiceCache", key = "#name")
+    @Cacheable(value = "products", key = "#name")
     public ProductLdo findProductByName(String name) {
         Product product = productRepository.findByName(name);
         return Mapper.mapToProductDto(product);

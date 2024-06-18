@@ -58,5 +58,7 @@ authorization:
       prefix: Bearer
 
 logging:
+  file:
+    name: /Users/artemayvazyan/Desktop/tierserviceapp/backend/product-service/product-service.log
   level:
     org.springframework.security: TRACE

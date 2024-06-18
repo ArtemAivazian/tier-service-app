@@ -51,4 +51,6 @@ logging:
     org:
       springframework:
         security: TRACE
+  file:
+    name: /Users/artemayvazyan/Desktop/tierserviceapp/backend/auth-service/auth-service.log
 

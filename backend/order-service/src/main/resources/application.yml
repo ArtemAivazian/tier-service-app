@@ -52,3 +52,5 @@ authorization:
 logging:
   level:
     org.springframework.security: TRACE
+  file:
+    name: /Users/artemayvazyan/Desktop/tierserviceapp/backend/order-service/order-service.log

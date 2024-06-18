@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    @Cacheable(value = "orderServiceCache", key = "#userId")
+    @Cacheable(value = "orders", key = "#userId")
     public List<OrderLdo> getUserOrders(String userId) {
         List<Order> orders = orderRepository.getOrdersByUserId(Long.valueOf(userId));
 
@@ -52,14 +52,8 @@ public class OrderServiceImpl implements OrderService {
         return orderLdos;
     }
 
-
-
-    @CacheEvict(value = "orderServiceCache", allEntries = true)
-    public void clearAllCache() {
-        // TODO document why this method is empty
-    }
-
     @Override
+    @CacheEvict(value = "orders", key = "#orderRequest.userId")
     public OrderLdo placeOrder(OrderLdo orderRequest, String authorization) {
 
         //VALIDATE ORDERED PRODUCTS
@@ -95,10 +89,6 @@ public class OrderServiceImpl implements OrderService {
         kafkaTemplate.send("order-placed-topic-async", orderId, orderPlacedEvent);
         LOGGER.info("Asynchronous message has been sent to OrderPlacedTopicAsync");
 
-
-
         return mapper.map(placedOrder, OrderLdo.class);
-
     }
-
 }
