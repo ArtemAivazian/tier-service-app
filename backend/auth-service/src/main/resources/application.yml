@@ -10,6 +10,8 @@ eureka:
 
 
 spring:
+  config:
+    import: optional:configserver:http://localhost:8012
   devtools:
     restart:
       enabled: true #automatically restart app after making changes
@@ -29,6 +31,12 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 token:
   secret: 9a2f8c4e6b0d71f3e8b925a45747f894a3d6bc70fa8d5e21a15a6d8c3b9a0e7c
@@ -53,4 +61,10 @@ logging:
         security: TRACE
   file:
     name: /Users/artemayvazyan/Desktop/tierserviceapp/backend/auth-service/auth-service.log
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: beans,health,mappings,httpexchanges
 

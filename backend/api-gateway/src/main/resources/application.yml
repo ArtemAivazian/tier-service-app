@@ -1,6 +1,13 @@
 server:
   port: 8080
 spring:
+  config:
+    import: optional:configserver:http://localhost:8012
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
   application:
     name: api-gateway
   cloud:
@@ -58,6 +65,48 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/order-service/(?<segment>.*), /${segment}
+        #actuator
+        - id: auth-service-actuator
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth-service/actuator/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/auth-service/(?<segment>.*), /${segment}
+        - id: user-service-actuator
+          uri: lb://user-service
+          predicates:
+            - Path=/user-service/actuator/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /${segment}
+        - id: product-service-actuator
+          uri: lb://product-service
+          predicates:
+            - Path=/product-service/actuator/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/product-service/(?<segment>.*), /${segment}
+        - id: order-service-actuator
+          uri: lb://order-service
+          predicates:
+            - Path=/order-service/actuator/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/order-service/(?<segment>.*), /${segment}
+        - id: notification-service-actuator
+          uri: lb://notification-service
+          predicates:
+            - Path=/notification-service/actuator/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/notification-service/(?<segment>.*), /${segment}
+
 
 eureka:
   client:
@@ -71,3 +120,11 @@ logging:
   file:
     name: /Users/artemayvazyan/Desktop/tierserviceapp/backend/api-gateway/api-gateway.log
 
+management:
+  endpoint:
+    gateway:
+      enabled: true #listing all routes that are configured here
+  endpoints:
+    web:
+      exposure:
+        include: gateway,health,mappings #to expose endpoint through http
