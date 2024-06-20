@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface ProductsService {
     ProductLdo createProduct(ProductLdo productLdo) throws StockNotFoundException;
+    ProductLdo updateProduct(Long id, ProductLdo productLdo) throws StockNotFoundException;
+    void deleteProduct(Long id);
     List<ProductLdo> findAllProducts();
     ProductLdo findProductByName(String name);
 }

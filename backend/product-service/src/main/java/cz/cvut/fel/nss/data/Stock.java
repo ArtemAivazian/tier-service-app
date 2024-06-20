@@ -25,4 +25,11 @@ public class Stock {
     private Long stockId;
     @Column(nullable = false)
     private String address;
+
+    @OneToMany(
+            mappedBy = "stock",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Product> products;
 }

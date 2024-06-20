@@ -45,7 +45,6 @@ public class ProductsController {
     }
 
     @GetMapping("/{name}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<ProductDto> getProductByName(
             @PathVariable("name") String name
     ) {
@@ -54,6 +53,24 @@ public class ProductsController {
         return ResponseEntity.ok(mapper.map(productLdo, ProductDto.class));
     }
 
+    @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ProductDto> updateProduct(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductDto productRequest
+    ) throws StockNotFoundException {
+        ProductLdo productLdo = mapper.map(productRequest, ProductLdo.class);
+        ProductLdo updatedProduct = productsService.updateProduct(id, productLdo);
+
+        return ResponseEntity.ok(mapper.map(updatedProduct, ProductDto.class));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productsService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 
 

@@ -9,10 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/stock")
@@ -32,5 +29,30 @@ public class StocksController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(mapper.map(savedStock, StockDto.class));
+    }
+
+    @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<StockDto> updateStock(
+            @PathVariable Long id,
+            @Valid @RequestBody StockDto request
+    ) {
+        StockLdo stockLdo = mapper.map(request, StockLdo.class);
+        StockLdo updatedStock = stockService.updateStock(id, stockLdo);
+
+        return ResponseEntity.ok(mapper.map(updatedStock, StockDto.class));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteStock(@PathVariable Long id) {
+        stockService.deleteStock(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<StockDto> getStockById(@PathVariable Long id) {
+        StockLdo stockLdo = stockService.findStockById(id);
+        return ResponseEntity.ok(mapper.map(stockLdo, StockDto.class));
     }
 }

@@ -33,9 +33,7 @@ public class Product {
     private BigDecimal price;
     @Column(nullable=false)
     private Integer quantity;
-    @ManyToOne(
-            cascade = CascadeType.ALL
-    )
+    @ManyToOne
     @JoinColumn(
             name = "stock_id",
             referencedColumnName = "stockId"
