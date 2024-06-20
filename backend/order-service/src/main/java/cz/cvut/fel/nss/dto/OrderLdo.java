@@ -15,7 +15,6 @@ import java.util.List;
 public class OrderLdo implements Serializable {
     @Serial
     private static final long serialVersionUID = -6458302846804207796L;
-
     private Long userId;
     private Long orderId;
     private List<OrderedProduct> orderedProducts;
