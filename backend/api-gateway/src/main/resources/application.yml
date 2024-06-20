@@ -15,10 +15,10 @@ spring:
       routes:
         #user
         - id: user-service-register
-          uri: lb://user-service #app name after lb://
+          uri: lb://user-service
           predicates:
-            - Path=/user-service/users/register
-            - Method=POST
+            - Path=/user-service/users/**
+            - Method=POST,PUT,DELETE
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /${segment}
@@ -38,7 +38,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /${segment}
-          #product
+        #product
         - id: product-service-create
           uri: lb://product-service
           predicates:

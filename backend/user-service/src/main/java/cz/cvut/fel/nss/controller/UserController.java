@@ -45,4 +45,25 @@ public class UserController {
                 .body(mapper.map(returnedUser, UserDto.class));
     }
 
+    @PutMapping("/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER') and (principal == #userId)")
+    public ResponseEntity<UserDto> updateUser(@PathVariable("userId") String userId,
+                                              @RequestBody @Valid UserDto userDto) {
+        UserLdo userLdo = mapper.map(userDto, UserLdo.class);
+        UserLdo updatedUser = userService.updateUser(userId, userLdo);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(mapper.map(updatedUser, UserDto.class));
+    }
+
+    @DeleteMapping("/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER') and (principal == #userId)")
+    public ResponseEntity<Void> deleteUser(@PathVariable("userId") String userId) {
+        userService.deleteUser(userId);
+
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
 }
