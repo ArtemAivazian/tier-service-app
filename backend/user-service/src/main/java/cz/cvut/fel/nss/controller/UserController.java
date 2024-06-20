@@ -45,8 +45,6 @@ public class UserController {
                 .body(mapper.map(returnedUser, UserDto.class));
     }
 
-<<<<<<< HEAD
-=======
     @PutMapping("/{userId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER') and (principal == #userId)")
     public ResponseEntity<UserDto> updateUser(@PathVariable("userId") String userId,
@@ -68,5 +66,4 @@ public class UserController {
                 .status(HttpStatus.NO_CONTENT)
                 .build();
     }
->>>>>>> main
 }

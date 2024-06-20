@@ -22,10 +22,7 @@ import java.util.List;
 public class OrderPlacedEventHandler {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     private ProductRepository productRepository;
-<<<<<<< HEAD
-=======
 
->>>>>>> main
     @KafkaHandler
     public void handle(OrderPlacedEvent event) {
         LOGGER.info("Received a new event: " + event);
@@ -36,11 +33,7 @@ public class OrderPlacedEventHandler {
                 throw new ProductNotFoundException(
                         orderedProductDto.getName() + " is not found.");
             }
-<<<<<<< HEAD
-            if (product.getQuantity() < orderedProduct.getQuantity()) {
-=======
             if (product.getQuantity() < orderedProductDto.getQuantity()) {
->>>>>>> main
                 throw new InsufficientAmountOfProductException(
                         "Insufficient amount of product " + orderedProductDto.getName());
             }
