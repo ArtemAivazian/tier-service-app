@@ -5,14 +5,19 @@ import cz.cvut.fel.nss.data.UserEntity;
 import cz.cvut.fel.nss.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class AdminLoader implements CommandLineRunner {
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) {

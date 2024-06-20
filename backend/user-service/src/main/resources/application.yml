@@ -10,20 +10,27 @@ eureka:
 
 
 spring:
+  config:
+    import: optional:configserver:http://localhost:8012
   devtools:
     restart:
       enabled: true #automatically restart app after making changes
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
   application:
     name: user-service
   datasource:
-    url: jdbc:postgresql://localhost:5442/users
+    url: jdbc:postgresql://localhost:5442/eshop
     username: "admin"
     password: "123"
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -39,7 +46,6 @@ spring:
 
 token:
   secret: 9a2f8c4e6b0d71f3e8b925a45747f894a3d6bc70fa8d5e21a15a6d8c3b9a0e7c
-  jwt_expiration_time: 86400000
 
 authorization:
   token:
@@ -48,13 +54,21 @@ authorization:
       prefix: Bearer
 
 logging:
+  file:
+    name: /Users/artemayvazyan/Desktop/tierserviceapp/backend/user-service/user-service.log
   level:
     cz:
       cvut:
         fel:
           nss:
             feignClient:
-              OrdersServiceClient: DEBUG
+              cz.cvut.fel.nss.feign.OrdersServiceClient: DEBUG
     org:
       springframework:
         security: TRACE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: beans,health,mappings,httpexchanges

@@ -10,9 +10,18 @@ eureka:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
 spring:
+  config:
+    import: optional:configserver:http://localhost:8012
   devtools:
     restart:
       enabled: true #automatically restart app after making changes
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
   application:
     name: notification-service
 
@@ -30,3 +39,12 @@ spring:
           json:
             trusted:
               packages: "*"
+logging:
+  file:
+    name: /Users/artemayvazyan/Desktop/tierserviceapp/backend/notification-service/notification-service.log
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: beans,health

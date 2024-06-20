@@ -10,13 +10,20 @@ eureka:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
 spring:
+  config:
+    import: optional:configserver:http://localhost:8012
   devtools:
     restart:
       enabled: true #automatically restart app after making changes
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
   application:
     name: product-service
   datasource:
-    url: jdbc:postgresql://localhost:5443/products
+    url: jdbc:postgresql://localhost:5442/eshop
     username: "admin"
     password: "123"
     driver-class-name: org.postgresql.Driver
@@ -58,5 +65,13 @@ authorization:
       prefix: Bearer
 
 logging:
+  file:
+    name: /Users/artemayvazyan/Desktop/tierserviceapp/backend/product-service/product-service.log
   level:
     org.springframework.security: TRACE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: beans,health,mappings,httpexchanges

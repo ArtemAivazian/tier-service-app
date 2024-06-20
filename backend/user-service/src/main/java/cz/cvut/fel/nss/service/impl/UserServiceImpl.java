@@ -2,22 +2,21 @@ package cz.cvut.fel.nss.service.impl;
 
 import cz.cvut.fel.nss.data.Role;
 import cz.cvut.fel.nss.data.UserEntity;
-import cz.cvut.fel.nss.dto.UserDto;
+import cz.cvut.fel.nss.dto.UserLdo;
+import cz.cvut.fel.nss.exception.NotFoundException;
 import cz.cvut.fel.nss.repository.UserRepository;
 import cz.cvut.fel.nss.service.UserService;
-import cz.cvut.fel.nss.feignClient.OrdersServiceClient;
-import cz.cvut.fel.nss.shared.OrderResponse;
-import feign.FeignException;
+import cz.cvut.fel.nss.feign.OrdersServiceClient;
+import cz.cvut.fel.nss.shared.OrderDto;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,11 +25,12 @@ import java.util.List;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final OrdersServiceClient ordersServiceClient;
+    private final BCryptPasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
 
-    public UserDto register(UserDto userDetails) {
+    @CacheEvict(value = "users", key = "#result.userId")
+    public UserLdo register(UserLdo userDetails) {
 
         userDetails.setEncryptedPassword(passwordEncoder.encode(userDetails.getPassword()));
         userDetails.setRole(Role.USER);
@@ -39,45 +39,53 @@ public class UserServiceImpl implements UserService {
 
         UserEntity registeredUser = userRepository.save(userEntity);
 
-        UserDto returnValue = mapper.map(registeredUser, UserDto.class);
-        return returnValue;
+        return mapper.map(registeredUser, UserLdo.class);
     }
 
     @Override
-    public UserDto getUserDetailsByEmail(String email) {
-        UserEntity userEntity = userRepository.findByEmail(email);
-
-        if (userEntity == null) throw new UsernameNotFoundException("User not found by email" +email);
-
-        return mapper.map(userEntity, UserDto.class);
-    }
-
-    @Override
-    @Cacheable(value = "userServiceCache", key = "#userId")
-    public UserDto getUserByUserId(String userId, String authorization) {
+    @Cacheable(value = "users", key = "#userId")
+    public UserLdo getUserByUserId(String userId, String authorization) {
         UserEntity userEntity = userRepository.findByUserId(Long.valueOf(userId));
-        if(userEntity == null) throw new UsernameNotFoundException("User not found by id " + userId);
+        if(userEntity == null) throw new NotFoundException(HttpStatus.NOT_FOUND, "User not found by id" + userId);
 
-        UserDto userDto = mapper.map(userEntity, UserDto.class);
+        UserLdo userLdo = mapper.map(userEntity, UserLdo.class);
 
-        List<OrderResponse> orderResponses = ordersServiceClient.getOrders(userId, authorization);
-        userDto.setOrders(orderResponses);
+        List<OrderDto> orderResponses = ordersServiceClient.getOrders(userId, authorization);
+        userLdo.setOrders(orderResponses);
 
-        return userDto;
+        return userLdo;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findByEmail(username);
+    @CachePut(value = "users", key = "#userId")
+    public UserLdo updateUser(String userId, UserLdo userDetails) {
+        UserEntity userEntity = userRepository.findByUserId(Long.valueOf(userId));
+        if (userEntity == null) throw new NotFoundException(HttpStatus.NOT_FOUND, "User not found by id" + userId);
 
-        if (userEntity == null) throw new UsernameNotFoundException(username);
+        userEntity.setFirstName(userDetails.getFirstName());
+        userEntity.setLastName(userDetails.getLastName());
+        userEntity.setEmail(userDetails.getEmail());
+        if (userDetails.getPassword() != null) {
+            userEntity.setEncryptedPassword(passwordEncoder.encode(userDetails.getPassword()));
+        }
 
-        return new User(
-                    userEntity.getEmail(),
-                    userEntity.getEncryptedPassword(),
-                    true, true, true, true,
-                    userEntity.getAuthorities()
-                );
+        UserEntity updatedUser = userRepository.save(userEntity);
+
+        return mapper.map(updatedUser, UserLdo.class);
     }
+
+    @Override
+    @CacheEvict(value = "users", key = "#userId")
+    public void deleteUser(String userId) {
+        UserEntity userEntity = userRepository.findByUserId(Long.valueOf(userId));
+        if (userEntity == null) throw new NotFoundException(HttpStatus.NOT_FOUND, "User not found by id" + userId);
+
+        userRepository.delete(userEntity);
+    }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> main
 }
 

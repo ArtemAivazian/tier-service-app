@@ -1,18 +1,17 @@
 package cz.cvut.fel.nss.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class StockDto implements Serializable {
-    private static final long serialVersionUID = 6111655498429054445L;
+public class StockDto {
     private Long stockId;
+    @NotNull(message="Stock address cannot be null")
     private String address;
 }

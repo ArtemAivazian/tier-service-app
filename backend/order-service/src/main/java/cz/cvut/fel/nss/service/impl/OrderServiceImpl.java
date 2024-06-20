@@ -2,15 +2,15 @@ package cz.cvut.fel.nss.service.impl;
 
 import cz.cvut.fel.nss.data.Order;
 import cz.cvut.fel.nss.data.OrderedProduct;
-import cz.cvut.fel.nss.dto.OrderDto;
+import cz.cvut.fel.nss.dto.OrderLdo;
+import cz.cvut.fel.nss.dto.OrderedProductDto;
 import cz.cvut.fel.nss.exception.CannotConstructKafkaMessageException;
 import cz.cvut.fel.nss.exception.InsufficientAmountOfProductException;
-import cz.cvut.fel.nss.exception.ProductNotFoundException;
-import cz.cvut.fel.nss.feignClient.ProductServiceClient;
+import cz.cvut.fel.nss.feign.ProductServiceClient;
 import cz.cvut.fel.nss.event.OrderPlacedEvent;
 import cz.cvut.fel.nss.repository.OrderRepository;
 import cz.cvut.fel.nss.service.OrderService;
-import cz.cvut.fel.nss.shared.ProductResponse;
+import cz.cvut.fel.nss.shared.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -19,11 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -39,85 +37,58 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    @Cacheable(value = "orderServiceCache", key = "#userId")
-    public List<OrderDto> getUserOrders(String userId) {
+    @Cacheable(value = "orders", key = "#userId")
+    public List<OrderLdo> getUserOrders(String userId) {
         List<Order> orders = orderRepository.getOrdersByUserId(Long.valueOf(userId));
 
-        List<OrderDto> orderDtos = orders.stream()
-                .map(order -> mapper.map(order, OrderDto.class))
+        List<OrderLdo> orderLdos = orders.stream()
+                .map(order -> mapper.map(order, OrderLdo.class))
                 .toList();
 
-        orderDtos.forEach(
-                orderDto -> orderDto.setOrderedProducts(
-                        orderRepository.getOrderedProductsByOrderId(orderDto.getOrderId()))
+        orderLdos.forEach(
+                orderLdo -> orderLdo.setOrderedProducts(
+                        orderRepository.getOrderedProductsByOrderId(orderLdo.getOrderId()))
         );
-        return orderDtos;
+        return orderLdos;
     }
 
     @Override
-    public List<OrderDto> getAllOrders() {
-        List<Order> orders = orderRepository.findAll();
-        return orders.stream()
-                .map(order -> mapper.map(order, OrderDto.class))
-                .toList();
-    }
-
-
-
-    @CacheEvict(value = "orderServiceCache", allEntries = true)
-    public void clearAllCache() {
-
-    }
-
-    @Override
-    public OrderDto placeOrder(OrderDto orderRequestDto, String authorization) {
+    @CacheEvict(value = "orders", key = "#orderRequest.userId")
+    public OrderLdo placeOrder(OrderLdo orderRequest, String authorization) {
 
         //VALIDATE ORDERED PRODUCTS
-        List<OrderedProduct> orderedProducts = orderRequestDto.getOrderedProducts();
+        List<OrderedProduct> orderedProducts = orderRequest.getOrderedProducts();
         orderedProducts.forEach(orderedProduct -> {
-            ProductResponse product = productServiceClient.getProductByName(orderedProduct.getName(), authorization);
-//            if (product == null) {
-////                //TO-DO: send OrderFailedEvent
-////                OrderFailedEvent orderFailedEvent = new OrderFailedEvent();
-////                orderFailedEvent.setOrderId(event.getOrderId());
-////                orderFailedEvent.setUserId(event.getUserId());
-////                kafkaTemplate.send("order-failed-topic", event.getOrderId().toString(), orderFailedEvent);
-//                throw new ProductNotFoundException(
-//                        "Product " + orderedProduct.getName() + " is not found.");
-//            }
+            ProductDto product = productServiceClient.getProductByName(orderedProduct.getName(), authorization);
             if (product.getQuantity() < orderedProduct.getQuantity()) {
-//                //TO-DO: send OrderFailedEvent
-//                OrderFailedEvent orderFailedEvent = new OrderFailedEvent();
-//                orderFailedEvent.setOrderId(event.getOrderId());
-//                orderFailedEvent.setUserId(event.getUserId());
-//                kafkaTemplate.send("order-failed-topic", event.getOrderId().toString(), orderFailedEvent);
                 throw new InsufficientAmountOfProductException(
                         "Insufficient amount of product " + orderedProduct.getName());
             }
         });
 
-        Order order = mapper.map(orderRequestDto, Order.class);
+        Order order = mapper.map(orderRequest, Order.class);
         Order placedOrder = orderRepository.save(order);
 
+        List<OrderedProductDto> orderedProductsDtos = orderedProducts.stream()
+                .map(orderedProduct -> mapper.map(orderedProduct, OrderedProductDto.class))
+                .toList();
+
+
         OrderPlacedEvent orderPlacedEvent = mapper.map(placedOrder, OrderPlacedEvent.class);
+        orderPlacedEvent.setOrderedProducts(orderedProductsDtos);
         String orderId = orderPlacedEvent.getOrderId().toString();
 
         try {
-            SendResult<String, OrderPlacedEvent> result =
-                    kafkaTemplate.send("order-placed-topic-sync", orderId, orderPlacedEvent)
+            kafkaTemplate.send("order-placed-topic-sync", orderId, orderPlacedEvent)
                             .get();
             LOGGER.info("Synchronous message has been sent to OrderPlacedTopicSync");
         } catch (ExecutionException | InterruptedException e) {
             throw new CannotConstructKafkaMessageException("Message cannot be constructed");
         }
 
-        CompletableFuture<SendResult<String, OrderPlacedEvent>> future =
-                kafkaTemplate.send("order-placed-topic-async", orderId, orderPlacedEvent);
+        kafkaTemplate.send("order-placed-topic-async", orderId, orderPlacedEvent);
         LOGGER.info("Asynchronous message has been sent to OrderPlacedTopicAsync");
 
-        OrderDto returnValue = mapper.map(placedOrder, OrderDto.class);
-        return returnValue;
-
+        return mapper.map(placedOrder, OrderLdo.class);
     }
-
 }

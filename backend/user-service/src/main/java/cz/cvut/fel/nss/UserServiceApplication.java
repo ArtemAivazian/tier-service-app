@@ -1,18 +1,18 @@
 package cz.cvut.fel.nss;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.fel.nss.exception.FeignErrorDecoder;
 import feign.Logger;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.web.exchanges.HttpExchangeRepository;
+import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeRepository;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 @EnableDiscoveryClient
@@ -22,7 +22,7 @@ public class UserServiceApplication {
         SpringApplication.run(UserServiceApplication.class, args);
     }
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -41,6 +41,11 @@ public class UserServiceApplication {
     @Bean
     public FeignErrorDecoder getFeignErrorDecoder() {
         return new FeignErrorDecoder();
+    }
+
+    @Bean
+    public HttpExchangeRepository httpTraceRepository(){
+        return new InMemoryHttpExchangeRepository();
     }
 
 }

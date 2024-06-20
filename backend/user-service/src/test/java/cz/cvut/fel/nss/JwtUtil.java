@@ -1,17 +1,12 @@
 package cz.cvut.fel.nss;
 
-import cz.cvut.fel.nss.dto.UserDto;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.security.Key;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 public class JwtUtil {
     private static final String SECRET_KEY = "9a2f8c4e6b0d71f3e8b925a45747f894a3d6bc70fa8d5e21a15a6d8c3b9a0e7c";
