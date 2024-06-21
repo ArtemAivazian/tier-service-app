@@ -1,0 +1,172 @@
+openapi: "3.0.3"
+info:
+  title: "User API"
+  description: "User Microservice with CRUD operations and Feign Client to Order Microservice"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080/user-service"
+paths:
+  /users/register:
+    post:
+      summary: "User Registration"
+      description: "Creation of the User Account in the System"
+      operationId: "register"
+      requestBody:
+        description: "User Registration Data"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDto"
+        required: true
+      responses:
+        "201":
+          description: "Registered User Data"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /users/{userId}:
+    get:
+      summary: "Get User Info"
+      description: "Get User Info with its data and orders with ordered products"
+      operationId: "getUser"
+      parameters:
+        - name: "userId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "User's Info with its data and orders with ordered products"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+    put:
+      summary: "Update User"
+      description: "Update User Info"
+      operationId: "updateUser"
+      parameters:
+        - name: "userId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDto"
+        required: true
+      responses:
+        "200":
+          description: "Updated User's Info"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+    delete:
+      summary: "Delete User"
+      description: "Delete User"
+      operationId: "deleteUser"
+      parameters:
+        - name: "userId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "204":
+          description: "NO_CONTENT"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /users/{userId}/orders:
+    get:
+      summary: "Get User's orders"
+      description: "Http Feign Client for communication with Order Service \
+                    to get User's Orders with Ordered products"
+      parameters:
+        - name: "userId"
+          in: "path"
+          required: false
+      responses:
+        "200":
+          description: "List of OrderDto objects"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/OrderDto"
+components:
+  schemas:
+    BigDecimal:
+      type: "object"
+      properties: { }
+    OrderedProductDto:
+      type: "object"
+      properties:
+        productId:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+        price:
+          $ref: "#/components/schemas/BigDecimal"
+        quantity:
+          type: "integer"
+          format: "int32"
+        stockId:
+          type: "integer"
+          format: "int64"
+    OrderDto:
+      type: "object"
+      properties:
+        userId:
+          type: "integer"
+          format: "int64"
+        orderId:
+          type: "integer"
+          format: "int64"
+        orderedProducts:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/OrderedProductDto"
+    UserDto:
+      type: "object"
+      properties:
+        userId:
+          type: "integer"
+          format: "int64"
+        firstName:
+          type: "string"
+        lastName:
+          type: "string"
+        email:
+          type: "string"
+        password:
+          type: "string"
+        role:
+          type: "string"
+          enum:
+            - "ADMIN"
+            - "USER"
+            - "permissions"
+        orders:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/OrderDto"
+    HttpHeaders:
+      type: "object"
+      properties: { }
+    ResponseEntity:
+      type: "object"
+      properties:
+        headers:
+          $ref: "#/components/schemas/HttpHeaders"

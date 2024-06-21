@@ -1,10 +1,10 @@
 package cz.cvut.fel.nss.data;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
+/**
+ * Permission enum defines various permissions for roles in the application.
+ */
 @RequiredArgsConstructor
 public enum Permission {
 

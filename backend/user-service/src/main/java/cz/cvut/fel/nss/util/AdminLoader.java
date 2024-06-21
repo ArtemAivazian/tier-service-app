@@ -10,16 +10,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * AdminLoader is a utility class that initializes the admin user in the database if it does not already exist.
+ */
 @Component
 @RequiredArgsConstructor
 public class AdminLoader implements CommandLineRunner {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    /**
+     * Runs the command line task to check for and create an admin user.
+     *
+     * @param args command line arguments
+     */
     @Override
     public void run(String... args) {
         UserEntity user = userRepository.findByUserId(1L);
-        if (user != null) {
+        if (user == null) {
             UserEntity adminUser = new UserEntity();
             adminUser.setUserId(1L);
             adminUser.setFirstName("Artem");

@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 
+/**
+ * UserDto is a Data Transfer Object representing a user, including validation constraints.
+ */
 @Data
 @Builder
 @AllArgsConstructor

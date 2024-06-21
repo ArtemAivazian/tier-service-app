@@ -12,10 +12,21 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import java.io.IOException;
 
+/**
+ * AuthorizationFilter is a custom filter that extends BasicAuthenticationFilter to handle JWT-based authorization.
+ */
 public class AuthorizationFilter extends BasicAuthenticationFilter {
 
     private final Environment environment;
     private final JwtService jwtService;
+
+    /**
+     * Constructs an AuthorizationFilter with the provided authentication manager, environment, and JWT service.
+     *
+     * @param authenticationManager the authentication manager
+     * @param environment the environment for accessing properties
+     * @param jwtService the service for handling JWT operations
+     */
     public AuthorizationFilter(AuthenticationManager authenticationManager,
                                Environment environment, JwtService jwtService) {
         super(authenticationManager);
@@ -23,6 +34,15 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         this.jwtService = jwtService;
     }
 
+    /**
+     * Filters each HTTP request to check for a valid authorization header and set the security context if valid.
+     *
+     * @param request the HTTP request
+     * @param response the HTTP response
+     * @param filterChain the filter chain
+     * @throws ServletException if a servlet error occurs
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -43,6 +63,12 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Retrieves the authentication token from the request if the authorization header contains a valid JWT.
+     *
+     * @param req the HTTP request
+     * @return the authentication token or null if the JWT is invalid
+     */
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest req) {
         String authorizationHeader = req.getHeader(environment.getProperty("authorization.token.header.name"));
 
