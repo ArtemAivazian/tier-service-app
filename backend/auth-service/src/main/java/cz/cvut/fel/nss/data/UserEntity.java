@@ -9,6 +9,10 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
+/**
+ * Entity class representing a user in the system.
+ * This class maps to the "users" table in the database.
+ */
 @Entity
 @Table(name = "users")
 @Data

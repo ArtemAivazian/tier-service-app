@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * UserController handles HTTP requests for user-related operations such as registration, retrieval, update, and deletion.
+ */
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -19,6 +22,12 @@ public class UserController {
     private final UserService userService;
     private final ModelMapper mapper;
 
+    /**
+     * Registers a new user.
+     *
+     * @param registerRequest the user data transfer object containing registration information
+     * @return the response entity containing the registered user data transfer object
+     */
     @PostMapping("/register")
     @PreAuthorize("permitAll()")
     public ResponseEntity<UserDto> register(
@@ -32,6 +41,13 @@ public class UserController {
                 .body(mapper.map(registeredUser, UserDto.class));
     }
 
+    /**
+     * Retrieves a user by user ID.
+     *
+     * @param userId the ID of the user to retrieve
+     * @param authorization the authorization header
+     * @return the response entity containing the user data transfer object
+     */
     @GetMapping(value="/{userId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER') and (principal == #userId)")
     public ResponseEntity<UserDto> getUser(
@@ -45,6 +61,13 @@ public class UserController {
                 .body(mapper.map(returnedUser, UserDto.class));
     }
 
+    /**
+     * Updates a user by user ID.
+     *
+     * @param userId the ID of the user to update
+     * @param userDto the user data transfer object containing updated user information
+     * @return the response entity containing the updated user data transfer object
+     */
     @PutMapping("/{userId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER') and (principal == #userId)")
     public ResponseEntity<UserDto> updateUser(@PathVariable("userId") String userId,
@@ -57,6 +80,12 @@ public class UserController {
                 .body(mapper.map(updatedUser, UserDto.class));
     }
 
+    /**
+     * Deletes a user by user ID.
+     *
+     * @param userId the ID of the user to delete
+     * @return the response entity indicating the deletion status
+     */
     @DeleteMapping("/{userId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER') and (principal == #userId)")
     public ResponseEntity<Void> deleteUser(@PathVariable("userId") String userId) {

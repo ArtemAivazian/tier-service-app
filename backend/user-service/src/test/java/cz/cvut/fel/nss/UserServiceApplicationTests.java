@@ -2,7 +2,9 @@ package cz.cvut.fel.nss;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import cz.cvut.fel.nss.dto.UserDto;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,6 +25,9 @@ import org.testcontainers.utility.DockerImageName;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * UserServiceApplicationTests contains integration tests for the UserServiceApplication.
+ */
 @SpringBootTest
 @Testcontainers
 @AutoConfigureMockMvc
@@ -32,6 +37,11 @@ class UserServiceApplicationTests {
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:9.6.12"));
 
+    /**
+     * Sets properties for the test containers.
+     *
+     * @param dynamicPropertyRegistry the dynamic property registry
+     */
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry dynamicPropertyRegistry) {
         dynamicPropertyRegistry.add("spring.datasource.url", postgres::getJdbcUrl);
@@ -40,16 +50,27 @@ class UserServiceApplicationTests {
 
     }
 
+    /**
+     * Starts the PostgreSQL container before all tests.
+     */
     @BeforeAll
     static void beforeAll() {
         postgres.start();
     }
 
+    /**
+     * Stops the PostgreSQL container after all tests.
+     */
     @AfterAll
     static void afterAll() {
         postgres.stop();
     }
 
+    /**
+     * Tests the user registration functionality.
+     *
+     * @throws Exception if an error occurs during the test
+     */
     @Test
     void testRegisterUser() throws Exception {
         UserDto registerRequest = getRegisterRequest();
@@ -61,6 +82,11 @@ class UserServiceApplicationTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.userId").isNotEmpty());
     }
 
+    /**
+     * Tests the user deletion functionality.
+     *
+     * @throws Exception if an error occurs during the test
+     */
     @Test
     void testDeleteUser() throws Exception {
         // Register a user
@@ -94,6 +120,11 @@ class UserServiceApplicationTests {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Tests the user update functionality.
+     *
+     * @throws Exception if an error occurs during the test
+     */
     @Test
     void testUpdateUser() throws Exception {
         // Register a user
@@ -134,7 +165,11 @@ class UserServiceApplicationTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(updateRequest.getEmail()));
     }
 
-
+    /**
+     * Generates a UserDto for registration.
+     *
+     * @return a UserDto with registration details
+     */
     private UserDto getRegisterRequest() {
         String uniqueEmail = "anthony" + System.currentTimeMillis() + "@gmail.com";
         return UserDto.builder()
@@ -145,6 +180,12 @@ class UserServiceApplicationTests {
                 .build();
     }
 
+    /**
+     * Converts an object to its JSON string representation.
+     *
+     * @param obj the object to convert
+     * @return the JSON string representation of the object
+     */
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);

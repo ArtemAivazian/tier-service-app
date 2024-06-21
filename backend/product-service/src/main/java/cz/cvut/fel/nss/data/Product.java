@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * Entity representing a product.
+ */
 @Entity
 @Table(name = "products")
 @Data
@@ -33,9 +36,7 @@ public class Product {
     private BigDecimal price;
     @Column(nullable=false)
     private Integer quantity;
-    @ManyToOne(
-            cascade = CascadeType.ALL
-    )
+    @ManyToOne
     @JoinColumn(
             name = "stock_id",
             referencedColumnName = "stockId"

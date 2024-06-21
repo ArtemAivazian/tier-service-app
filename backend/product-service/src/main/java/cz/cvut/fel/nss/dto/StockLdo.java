@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Lightweight Data Object for a Stock.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

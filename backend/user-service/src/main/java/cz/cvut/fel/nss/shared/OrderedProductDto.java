@@ -8,6 +8,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+/**
+ * OrderedProductDto is a Data Transfer Object representing a product in an order.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

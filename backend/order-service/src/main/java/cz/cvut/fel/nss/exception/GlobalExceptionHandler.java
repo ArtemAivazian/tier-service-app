@@ -12,8 +12,19 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Global exception handler for the application.
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    /**
+     * Handles NotFoundException.
+     *
+     * @param ex      the exception
+     * @param request the web request
+     * @return a response entity with error details
+     */
     @ExceptionHandler(NotFoundException.class)
     @ResponseBody
     public ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request) {
@@ -26,6 +37,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * Handles ServiceUnavailableException.
+     *
+     * @param ex      the exception
+     * @param request the web request
+     * @return a response entity with error details
+     */
     @ExceptionHandler(ServiceUnavailableException.class)
     @ResponseBody
     public ResponseEntity<Object> handleServiceUnavailableException(ServiceUnavailableException ex, WebRequest request) {
@@ -38,6 +56,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
+    /**
+     * Handles ProductNotFoundException.
+     *
+     * @param ex the exception
+     * @return a response entity with error details
+     */
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<Object> handleProductNotFoundException(ProductNotFoundException ex) {
         var body = Map.of(
@@ -49,6 +73,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /**
+     * Handles InsufficientAmountOfProductException.
+     *
+     * @param ex the exception
+     * @return a response entity with error details
+     */
     @ExceptionHandler(InsufficientAmountOfProductException.class)
     public ResponseEntity<Object> handleInsufficientAmountOfProductException(InsufficientAmountOfProductException ex) {
         var body = Map.of(
@@ -60,6 +90,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /**
+     * Handles CannotConstructKafkaMessageException.
+     *
+     * @param ex the exception
+     * @return a response entity with error details
+     */
     @ExceptionHandler(CannotConstructKafkaMessageException.class)
     public ResponseEntity<Object> handleCannotConstructKafkaMessageException(CannotConstructKafkaMessageException ex) {
         var body = Map.of(

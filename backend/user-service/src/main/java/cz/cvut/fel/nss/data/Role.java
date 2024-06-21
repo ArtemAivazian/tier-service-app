@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 
 import static cz.cvut.fel.nss.data.Permission.*;
 
+/**
+ * Role enum defines the roles in the application and their corresponding permissions.
+ */
 @RequiredArgsConstructor
 public enum Role {
     ADMIN(
@@ -32,6 +35,11 @@ public enum Role {
     @Getter
     private final Set<Permission> permissions;
 
+    /**
+     * Retrieves the authorities granted to the role.
+     *
+     * @return a list of granted authorities
+     */
     public List<SimpleGrantedAuthority> getAuthorities() {
         var authorities = getPermissions()
                 .stream()

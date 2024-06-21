@@ -9,6 +9,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+/**
+ * Lightweight Data Object for a Product.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

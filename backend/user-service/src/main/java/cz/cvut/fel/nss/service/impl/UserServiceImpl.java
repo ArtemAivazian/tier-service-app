@@ -21,6 +21,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * UserServiceImpl implements the UserService interface to provide operations for managing users.
+ */
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -29,6 +32,12 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
 
+    /**
+     * Registers a new user.
+     *
+     * @param userDetails the user details to register
+     * @return the registered user details
+     */
     @CacheEvict(value = "users", key = "#result.userId")
     public UserLdo register(UserLdo userDetails) {
 
@@ -42,11 +51,19 @@ public class UserServiceImpl implements UserService {
         return mapper.map(registeredUser, UserLdo.class);
     }
 
+    /**
+     * Retrieves a user by their user ID.
+     *
+     * @param userId the ID of the user to retrieve
+     * @param authorization the authorization header
+     * @return the user details
+     */
     @Override
     @Cacheable(value = "users", key = "#userId")
     public UserLdo getUserByUserId(String userId, String authorization) {
         UserEntity userEntity = userRepository.findByUserId(Long.valueOf(userId));
-        if(userEntity == null) throw new NotFoundException(HttpStatus.NOT_FOUND, "User not found by id" + userId);
+        if(userEntity == null)
+            throw new NotFoundException(HttpStatus.NOT_FOUND, "User not found by id" + userId);
 
         UserLdo userLdo = mapper.map(userEntity, UserLdo.class);
 
@@ -56,11 +73,19 @@ public class UserServiceImpl implements UserService {
         return userLdo;
     }
 
+    /**
+     * Updates a user's details.
+     *
+     * @param userId the ID of the user to update
+     * @param userDetails the updated user details
+     * @return the updated user details
+     */
     @Override
     @CachePut(value = "users", key = "#userId")
     public UserLdo updateUser(String userId, UserLdo userDetails) {
         UserEntity userEntity = userRepository.findByUserId(Long.valueOf(userId));
-        if (userEntity == null) throw new NotFoundException(HttpStatus.NOT_FOUND, "User not found by id" + userId);
+        if (userEntity == null)
+            throw new NotFoundException(HttpStatus.NOT_FOUND, "User not found by id" + userId);
 
         userEntity.setFirstName(userDetails.getFirstName());
         userEntity.setLastName(userDetails.getLastName());
@@ -74,15 +99,19 @@ public class UserServiceImpl implements UserService {
         return mapper.map(updatedUser, UserLdo.class);
     }
 
+    /**
+     * Deletes a user by their user ID.
+     *
+     * @param userId the ID of the user to delete
+     */
     @Override
     @CacheEvict(value = "users", key = "#userId")
     public void deleteUser(String userId) {
         UserEntity userEntity = userRepository.findByUserId(Long.valueOf(userId));
-        if (userEntity == null) throw new NotFoundException(HttpStatus.NOT_FOUND, "User not found by id" + userId);
+        if (userEntity == null)
+            throw new NotFoundException(HttpStatus.NOT_FOUND, "User not found by id" + userId);
 
         userRepository.delete(userEntity);
     }
-
-
 }
 

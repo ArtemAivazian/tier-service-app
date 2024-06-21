@@ -12,8 +12,19 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * GlobalExceptionHandler is a controller advice class that handles global exceptions and provides custom responses.
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    /**
+     * Handles NotFoundException and provides a custom response.
+     *
+     * @param ex the NotFoundException
+     * @param request the current web request
+     * @return a ResponseEntity containing the exception details
+     */
     @ExceptionHandler(NotFoundException.class)
     @ResponseBody
     public ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request) {
@@ -26,6 +37,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * Handles ServiceUnavailableException and provides a custom response.
+     *
+     * @param ex the ServiceUnavailableException
+     * @param request the current web request
+     * @return a ResponseEntity containing the exception details
+     */
     @ExceptionHandler(ServiceUnavailableException.class)
     @ResponseBody
     public ResponseEntity<Object> handleServiceUnavailableException(ServiceUnavailableException ex, WebRequest request) {

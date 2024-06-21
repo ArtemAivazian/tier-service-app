@@ -15,6 +15,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Event handler for processing OrderPlacedEvent.
+ */
 @Component
 @KafkaListener(topics = "order-placed-topic-sync")
 @Slf4j
@@ -23,6 +26,11 @@ public class OrderPlacedEventHandler {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     private ProductRepository productRepository;
 
+    /**
+     * Handles the OrderPlacedEvent.
+     *
+     * @param event the order placed event
+     */
     @KafkaHandler
     public void handle(OrderPlacedEvent event) {
         LOGGER.info("Received a new event: " + event);

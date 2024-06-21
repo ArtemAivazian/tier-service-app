@@ -43,7 +43,7 @@ spring:
           uri: lb://product-service
           predicates:
             - Path=/product-service/product/**
-            - Method=POST,GET,PATCH
+            - Method=POST,GET,PUT,DELETE
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/product-service/(?<segment>.*), /${segment}
@@ -51,8 +51,8 @@ spring:
         - id: product-service-create-stock
           uri: lb://product-service
           predicates:
-            - Path=/product-service/stock
-            - Method=POST
+            - Path=/product-service/stock/**
+            - Method=POST,PUT,GET,DELETE
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/product-service/(?<segment>.*), /${segment}

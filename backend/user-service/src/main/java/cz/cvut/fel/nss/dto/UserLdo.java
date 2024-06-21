@@ -12,6 +12,9 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * UserLdo is a Lightweight Data Object representing a user, used for more efficient data transfer inside the microservice
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,7 +30,4 @@ public class UserLdo implements Serializable {
     private String encryptedPassword;
     private Role role;
     private List<OrderDto> orders;
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role.getAuthorities();
-    }
 }

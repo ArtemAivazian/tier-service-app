@@ -1,0 +1,220 @@
+openapi: "3.0.3"
+info:
+  title: "Product API"
+  description: "Product Microservice with CRUD operations for Stock and Product endpoints"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080/product-service"
+paths:
+  /product/create:
+    post:
+      summary: "Create Product"
+      description: "Create Product"
+      operationId: "createProduct"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductDto"
+        required: true
+      responses:
+        "201":
+          description: "Created Product"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /product/all:
+    get:
+      summary: "Get All Products"
+      description: "Get All Products"
+      operationId: "getAllProducts"
+      responses:
+        "200":
+          description: "List of All Products in db"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /product/{name}:
+    get:
+      summary: "Get Product By Name"
+      description: "Get Product By Name"
+      operationId: "getProductByName"
+      parameters:
+        - name: "name"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "Response Entity with ProductDto Obj"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /product/update/{id}:
+    put:
+      summary: "Update Product Info"
+      description: "Update Product Info"
+      operationId: "updateProduct"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductDto"
+        required: true
+      responses:
+        "200":
+          description: "Updated Product"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /product/delete/{id}:
+    delete:
+      summary: "Delete Product By Id"
+      description: "Delete Product By Id"
+      operationId: "deleteProduct"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "204":
+          description: "NO_CONTENT"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /stock:
+    post:
+      summary: "Create Stock"
+      description: "Create Stock"
+      operationId: "createStock"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StockDto"
+        required: true
+      responses:
+        "201":
+          description: "CREATED"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /stock/update/{id}:
+    put:
+      summary: "Update Stock"
+      description: "Update Stock"
+      operationId: "updateStock"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StockDto"
+        required: true
+      responses:
+        "200":
+          description: "Updated Stock"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /stock/delete/{id}:
+    delete:
+      summary: "Delete Stock"
+      description: "After stock deletion all product that were related with this stock \
+                    will be deleted as well"
+      operationId: "deleteStock"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "204":
+          description: "NO_CONTENT"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /stock/{id}:
+    get:
+      summary: "Get Stock By Id"
+      description: "Get Stock By Id"
+      operationId: "getStockById"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "Response Entity with stockDto obj"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+
+components:
+  schemas:
+    BigDecimal:
+      type: "object"
+      properties: { }
+    ProductDto:
+      type: "object"
+      properties:
+        productId:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+        price:
+          $ref: "#/components/schemas/BigDecimal"
+        quantity:
+          type: "integer"
+          format: "int32"
+        stockId:
+          type: "integer"
+          format: "int64"
+    StockDto:
+      type: "object"
+      properties:
+        stockId:
+          type: "integer"
+          format: "int64"
+        address:
+          type: "string"
+    HttpHeaders:
+      type: "object"
+      properties: { }
+    ResponseEntity:
+      type: "object"
+      properties:
+        headers:
+          $ref: "#/components/schemas/HttpHeaders"

@@ -33,7 +33,6 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       group-id:
         - order-placed-notifications
-#        - order-failed-notifications
       properties:
         spring:
           json:

@@ -14,6 +14,9 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+/**
+ * SecurityConfiguration configures the security settings for the application, including JWT-based authorization.
+ */
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
@@ -22,6 +25,13 @@ public class SecurityConfiguration {
     private final JwtService jwtService;
     private final Environment environment;
 
+    /**
+     * Configures the security filter chain for the application.
+     *
+     * @param http the HttpSecurity to modify
+     * @return the security filter chain
+     * @throws Exception if an error occurs while configuring the security filter chain
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -29,7 +39,6 @@ public class SecurityConfiguration {
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
-
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)

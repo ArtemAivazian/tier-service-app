@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Data Transfer Object for an Order.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Data Transfer Object for a Stock.
+ */
 @Data
 @Builder
 @AllArgsConstructor

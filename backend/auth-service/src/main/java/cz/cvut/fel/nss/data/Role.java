@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
 import static cz.cvut.fel.nss.data.Permission.ADMIN_READ;
 import static cz.cvut.fel.nss.data.Permission.*;
 
+/**
+ * Enum representing various roles in the system.
+ * Each role is associated with a set of permissions.
+ */
 @RequiredArgsConstructor
 public enum Role {
     ADMIN(
@@ -33,6 +37,12 @@ public enum Role {
     @Getter
     private final Set<Permission> permissions;
 
+    /**
+     * Retrieves a list of authorities granted to the role.
+     * Each authority is represented by a SimpleGrantedAuthority.
+     *
+     * @return a list of granted authorities
+     */
     public List<SimpleGrantedAuthority> getAuthorities() {
         var authorities = getPermissions()
                 .stream()

@@ -9,6 +9,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * OrderDto is a Data Transfer Object representing an order, including validation constraints.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

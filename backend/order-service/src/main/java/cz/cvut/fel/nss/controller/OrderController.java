@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Optional;
 
 
+/**
+ * Controller for handling order-related requests.
+ */
 @RestController
 @RequestMapping
 @AllArgsConstructor
@@ -27,6 +30,12 @@ public class OrderController {
     private final OrderService orderService;
     private final ModelMapper mapper;
 
+    /**
+     * Retrieves the orders for a specific user.
+     *
+     * @param userId the user ID
+     * @return a ResponseEntity containing a list of OrderDto objects
+     */
     @GetMapping("/users/{userId}/orders")
     @PreAuthorize("(principal == #userId) and hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<OrderDto>> userOrders(
@@ -42,6 +51,13 @@ public class OrderController {
 
     }
 
+    /**
+     * Places a new order.
+     *
+     * @param orderRequest   the order request object
+     * @param authorization  the authorization header
+     * @return a ResponseEntity containing the placed order
+     */
     @PostMapping("/place")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Object> placeOrder(

@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Entity representing an order.
+ */
 @Entity
 @Table(name = "orders")
 @Data
@@ -27,7 +30,6 @@ public class Order {
             generator = "order_sequence"
     )
     private Long orderId;
-
     private Long userId;
     @OneToMany(
             cascade = CascadeType.ALL

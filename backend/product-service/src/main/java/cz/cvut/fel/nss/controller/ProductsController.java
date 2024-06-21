@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller for handling product-related requests.
+ */
 @RestController
 @RequestMapping("/product")
 @AllArgsConstructor
@@ -21,11 +24,19 @@ public class ProductsController {
     private final ProductsService productsService;
     private final ModelMapper mapper;
 
+    /**
+     * Creates a new product.
+     *
+     * @param productRequest the product request object
+     * @return the created product as a ProductDto
+     * @throws StockNotFoundException if the stock is not found
+     */
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductDto> createProduct(
             @Valid @RequestBody ProductDto productRequest
-    ) throws StockNotFoundException {
+    ) throws StockNotFoundException
+    {
         ProductLdo productLdo = mapper.map(productRequest, ProductLdo.class);
         ProductLdo savedProduct = productsService.createProduct(productLdo);
 
@@ -34,6 +45,11 @@ public class ProductsController {
                 .body(mapper.map(savedProduct, ProductDto.class));
     }
 
+    /**
+     * Retrieves all products.
+     *
+     * @return a list of ProductDto objects
+     */
     @GetMapping("/all")
     @PreAuthorize("permitAll()")
     public ResponseEntity<List<ProductDto>> getAllProducts() {
@@ -44,8 +60,13 @@ public class ProductsController {
                 .toList());
     }
 
+    /**
+     * Retrieves a product by its name.
+     *
+     * @param name the name of the product
+     * @return the product as a ProductDto
+     */
     @GetMapping("/{name}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<ProductDto> getProductByName(
             @PathVariable("name") String name
     ) {
@@ -54,6 +75,39 @@ public class ProductsController {
         return ResponseEntity.ok(mapper.map(productLdo, ProductDto.class));
     }
 
+    /**
+     * Updates a product.
+     *
+     * @param id             the product ID
+     * @param productRequest the product request object
+     * @return the updated product as a ProductDto
+     * @throws StockNotFoundException if the stock is not found
+     */
+    @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ProductDto> updateProduct(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductDto productRequest
+    ) throws StockNotFoundException
+    {
+        ProductLdo productLdo = mapper.map(productRequest, ProductLdo.class);
+        ProductLdo updatedProduct = productsService.updateProduct(id, productLdo);
+
+        return ResponseEntity.ok(mapper.map(updatedProduct, ProductDto.class));
+    }
+
+    /**
+     * Deletes a product.
+     *
+     * @param id the product ID
+     * @return a ResponseEntity with no content
+     */
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productsService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 
 

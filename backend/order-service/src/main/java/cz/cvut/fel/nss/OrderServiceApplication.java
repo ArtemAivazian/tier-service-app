@@ -13,6 +13,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 
+/**
+ * Main class for the Order Service application.
+ */
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
@@ -22,6 +25,11 @@ public class OrderServiceApplication {
         SpringApplication.run(OrderServiceApplication.class, args);
     }
 
+    /**
+     * Configures the ModelMapper bean with strict matching strategy.
+     *
+     * @return the configured ModelMapper bean
+     */
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
@@ -29,16 +37,31 @@ public class OrderServiceApplication {
         return modelMapper;
     }
 
+    /**
+     * Configures the Feign logger level to FULL.
+     *
+     * @return the Feign logger level
+     */
     @Bean
     public Logger.Level feignLoggerLevel() {
         return Logger.Level.FULL;
     }
 
+    /**
+     * Configures the Feign error decoder bean.
+     *
+     * @return the FeignErrorDecoder bean
+     */
     @Bean
     public FeignErrorDecoder getFeignErrorDecoder() {
         return new FeignErrorDecoder();
     }
 
+    /**
+     * Configures the HttpExchangeRepository bean for HTTP trace repository.
+     *
+     * @return the HttpExchangeRepository bean
+     */
     @Bean
     public HttpExchangeRepository httpTraceRepository(){
         return new InMemoryHttpExchangeRepository();

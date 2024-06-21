@@ -17,11 +17,20 @@ import java.security.Key;
 import java.util.*;
 import java.util.function.Function;
 
-
+/**
+ * Service class for handling JWT operations such as token generation.
+ */
 @Service
 @AllArgsConstructor
 public class JwtService {
     private Environment env;
+
+    /**
+     * Generates a JWT token for the given user.
+     *
+     * @param user the user for whom the token is to be generated
+     * @return the generated JWT token
+     */
     public String generateToken(AuthDto user) {
         return Jwts.builder()
                 .setSubject(user.getUserId().toString())
@@ -32,12 +41,22 @@ public class JwtService {
                 .compact();
     }
 
-
+    /**
+     * Retrieves the signing key used for signing JWT tokens.
+     *
+     * @return the signing key
+     */
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(env.getProperty("token.secret"));
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    /**
+     * Converts a collection of GrantedAuthority objects to a comma-separated string.
+     *
+     * @param authorities the collection of GrantedAuthority objects
+     * @return a comma-separated string of authorities
+     */
     private String populateAuthorities(Collection<? extends GrantedAuthority> authorities) {
         Set<String> authoritiesSet = new HashSet<>();
         for(GrantedAuthority authority: authorities) {
@@ -45,38 +64,4 @@ public class JwtService {
         }
         return String.join(",", authoritiesSet);
     }
-
-    private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    public String extractSubject(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-    public Collection<? extends GrantedAuthority> getAuthorities(String jwt) {
-        List<String> returnValue = new ArrayList<>();
-        try {
-            Claims claims = extractAllClaims(jwt);
-            String authoritiesStr = claims.get("authorities", String.class); // Get authorities as a single String
-            if (authoritiesStr != null) {
-                List<String> authorities = Arrays.asList(authoritiesStr.split(","));
-                returnValue.addAll(authorities);
-            }
-        } catch (Exception e) {
-            return null;
-        }
-        return returnValue.stream()
-                .map(SimpleGrantedAuthority::new)
-                .toList();
-    }
-
 }

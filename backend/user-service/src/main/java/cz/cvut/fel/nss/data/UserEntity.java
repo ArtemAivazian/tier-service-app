@@ -9,6 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
+/**
+ * UserEntity represents the user entity in the application.
+ */
 @Entity
 @Table(name = "users")
 @Data
@@ -44,8 +47,4 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role.getAuthorities();
-    }
 }
