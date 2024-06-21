@@ -17,12 +17,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Implementation of the ProductsService interface.
+ */
 @Service
 @AllArgsConstructor
 public class ProductsServiceImpl implements ProductsService {
     private final ProductRepository productRepository;
     private final StockRepository stockRepository;
 
+    /**
+     * Creates a new product.
+     *
+     * @param productLdo the product data
+     * @return the created product
+     * @throws StockNotFoundException if the stock is not found
+     */
     @CacheEvict(value = "products", key = "#productLdo.name")
     public ProductLdo createProduct(ProductLdo productLdo)
             throws StockNotFoundException
@@ -44,6 +54,11 @@ public class ProductsServiceImpl implements ProductsService {
         }
     }
 
+    /**
+     * Retrieves all products.
+     *
+     * @return a list of all products
+     */
     public List<ProductLdo> findAllProducts() {
         List<Product> products = productRepository.findAll();
         return products.stream()
@@ -51,6 +66,12 @@ public class ProductsServiceImpl implements ProductsService {
                 .toList();
     }
 
+    /**
+     * Finds a product by its name.
+     *
+     * @param name the name of the product
+     * @return the found product
+     */
     @Override
     @Cacheable(value = "products", key = "#name")
     public ProductLdo findProductByName(String name) {
@@ -58,6 +79,14 @@ public class ProductsServiceImpl implements ProductsService {
         return Mapper.mapToProductDto(product);
     }
 
+    /**
+     * Updates an existing product.
+     *
+     * @param id         the ID of the product to update
+     * @param productLdo the product data
+     * @return the updated product
+     * @throws StockNotFoundException if the stock is not found
+     */
     @CachePut(value = "products", key = "#id")
     public ProductLdo updateProduct(Long id, ProductLdo productLdo)
             throws StockNotFoundException
@@ -77,6 +106,11 @@ public class ProductsServiceImpl implements ProductsService {
         return Mapper.mapToProductDto(updatedProduct);
     }
 
+    /**
+     * Deletes a product by its ID.
+     *
+     * @param id the ID of the product to delete
+     */
     @CacheEvict(value = "products", key = "#id")
     public void deleteProduct(Long id) {
         productRepository.findById(id).ifPresentOrElse(

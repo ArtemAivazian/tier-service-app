@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * Entity representing a product.
+ */
 @Entity
 @Table(name = "products")
 @Data

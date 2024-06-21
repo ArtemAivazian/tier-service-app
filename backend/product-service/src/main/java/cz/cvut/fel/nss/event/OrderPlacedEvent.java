@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Event representing the placement of an order.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

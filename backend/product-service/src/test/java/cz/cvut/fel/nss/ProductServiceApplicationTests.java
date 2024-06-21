@@ -28,6 +28,9 @@ import java.math.BigDecimal;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Integration tests for the Product Service application.
+ */
 @SpringBootTest
 @Testcontainers
 @AutoConfigureMockMvc
@@ -37,6 +40,11 @@ class ProductServiceApplicationTests {
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:9.6.12"));
 
+    /**
+     * Sets dynamic properties for the PostgreSQL container.
+     *
+     * @param dynamicPropertyRegistry the dynamic property registry
+     */
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry dynamicPropertyRegistry) {
         dynamicPropertyRegistry.add("spring.datasource.url", postgres::getJdbcUrl);
@@ -55,6 +63,11 @@ class ProductServiceApplicationTests {
         postgres.stop();
     }
 
+    /**
+     * Tests the creation of a product.
+     *
+     * @throws Exception if an error occurs during the test
+     */
     @Test
     void testCreateProduct() throws Exception {
         StockDto stockDto = createStock("123 Main St");
@@ -82,11 +95,21 @@ class ProductServiceApplicationTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.stockId").value(stockDto.getStockId()));
     }
 
+    /**
+     * Tests the creation of a stock.
+     *
+     * @throws Exception if an error occurs during the test
+     */
     @Test
     void testCreateStock() throws Exception {
         createStock("123 Main St");
     }
 
+    /**
+     * Tests the deletion of a stock.
+     *
+     * @throws Exception if an error occurs during the test
+     */
     @Test
     void testDeleteStock() throws Exception {
         StockDto stockDto = createStock("456 Secondary St");
@@ -105,6 +128,13 @@ class ProductServiceApplicationTests {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Creates a stock with the given address.
+     *
+     * @param address the address of the stock
+     * @return the created StockDto object
+     * @throws Exception if an error occurs during the test
+     */
     private StockDto createStock(String address) throws Exception {
         StockDto stockDto = new StockDto();
         stockDto.setAddress(address);
@@ -128,7 +158,12 @@ class ProductServiceApplicationTests {
         return new ObjectMapper().readValue(stockResponse, StockDto.class);
     }
 
-
+    /**
+     * Converts an object to its JSON string representation.
+     *
+     * @param obj the object to convert
+     * @return the JSON string representation of the object
+     */
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);

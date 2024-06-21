@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * Entity representing a stock.
+ */
 @Entity
 @Table(name = "stocks")
 @Data

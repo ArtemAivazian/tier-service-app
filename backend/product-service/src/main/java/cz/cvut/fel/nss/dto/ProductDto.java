@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * Data Transfer Object for a Product.
+ */
 @Data
 @Builder
 @AllArgsConstructor

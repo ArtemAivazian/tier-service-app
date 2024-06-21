@@ -15,17 +15,30 @@ import java.security.Key;
 import java.util.*;
 import java.util.function.Function;
 
-
+/**
+ * Service for handling JWT token operations.
+ */
 @Service
 @AllArgsConstructor
 public class JwtService {
     private Environment env;
 
+    /**
+     * Retrieves the signing key for JWT tokens.
+     *
+     * @return the signing key
+     */
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(env.getProperty("token.secret"));
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    /**
+     * Extracts all claims from a JWT token.
+     *
+     * @param token the JWT token
+     * @return the claims
+     */
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
@@ -35,13 +48,35 @@ public class JwtService {
                 .getBody();
     }
 
+    /**
+     * Extracts the subject (user identifier) from a JWT token.
+     *
+     * @param token the JWT token
+     * @return the subject
+     */
     public String extractSubject(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+
+    /**
+     * Extracts a specific claim from a JWT token.
+     *
+     * @param token          the JWT token
+     * @param claimsResolver function to extract the claim
+     * @param <T>            the type of the claim
+     * @return the extracted claim
+     */
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
+
+    /**
+     * Retrieves the authorities (roles/permissions) from a JWT token.
+     *
+     * @param jwt the JWT token
+     * @return a collection of granted authorities
+     */
     public Collection<? extends GrantedAuthority> getAuthorities(String jwt) {
         List<String> returnValue = new ArrayList<>();
         try {
@@ -52,7 +87,7 @@ public class JwtService {
                 returnValue.addAll(authorities);
             }
         } catch (Exception e) {
-            return null;
+            return Collections.emptyList();
         }
         return returnValue.stream()
                 .map(SimpleGrantedAuthority::new)
