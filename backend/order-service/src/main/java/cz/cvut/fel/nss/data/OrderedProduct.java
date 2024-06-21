@@ -11,6 +11,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+/**
+ * Entity representing an ordered product.
+ */
 @Entity
 @Table(name = "ordered_products")
 @Data

@@ -9,6 +9,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Lightweight Data Object for an Order.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -24,6 +24,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Implementation of the OrderService interface.
+ */
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -36,6 +39,12 @@ public class OrderServiceImpl implements OrderService {
     private final ModelMapper mapper;
 
 
+    /**
+     * Retrieves the orders for a specific user.
+     *
+     * @param userId the user ID
+     * @return a list of OrderLdo objects representing the user's orders
+     */
     @Override
     @Cacheable(value = "orders", key = "#userId")
     public List<OrderLdo> getUserOrders(String userId) {
@@ -52,6 +61,13 @@ public class OrderServiceImpl implements OrderService {
         return orderLdos;
     }
 
+    /**
+     * Places a new order.
+     *
+     * @param orderRequest  the order request object
+     * @param authorization the authorization header
+     * @return the placed order as an OrderLdo object
+     */
     @Override
     @CacheEvict(value = "orders", key = "#orderRequest.userId")
     public OrderLdo placeOrder(OrderLdo orderRequest, String authorization) {

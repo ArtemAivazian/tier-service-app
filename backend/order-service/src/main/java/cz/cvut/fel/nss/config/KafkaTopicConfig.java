@@ -5,8 +5,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 
+/**
+ * Configuration class for Kafka topics.
+ */
 @Configuration
 public class KafkaTopicConfig {
+
+    /**
+     * Creates a Kafka topic for synchronous order placement.
+     *
+     * @return the new topic
+     */
     @Bean
     public NewTopic orderPlacedTopicSync(){
         return TopicBuilder
@@ -15,6 +24,11 @@ public class KafkaTopicConfig {
                 .build();
     }
 
+    /**
+     * Creates a Kafka topic for asynchronous order placement.
+     *
+     * @return the new topic
+     */
     @Bean
     public NewTopic orderPlacedTopicAsync(){
         return TopicBuilder
@@ -22,15 +36,4 @@ public class KafkaTopicConfig {
                 .partitions(1)
                 .build();
     }
-
-    @Bean
-    public NewTopic orderFailedTopic(){
-        return TopicBuilder
-                .name("order-failed-topic")
-                .partitions(1)
-                .build();
-    }
-
-
-
 }

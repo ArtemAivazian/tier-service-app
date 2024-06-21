@@ -30,6 +30,9 @@ import org.testcontainers.utility.DockerImageName;
 import java.math.BigDecimal;
 import java.util.Collections;
 
+/**
+ * Integration tests for the Order Service application.
+ */
 @SpringBootTest
 @Testcontainers
 @AutoConfigureMockMvc
@@ -41,6 +44,11 @@ class OrderServiceApplicationTests {
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:9.6.12"));
 
+    /**
+     * Sets dynamic properties for the PostgreSQL container.
+     *
+     * @param dynamicPropertyRegistry the dynamic property registry
+     */
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry dynamicPropertyRegistry) {
         dynamicPropertyRegistry.add("spring.datasource.url", postgres::getJdbcUrl);
@@ -59,6 +67,11 @@ class OrderServiceApplicationTests {
         postgres.stop();
     }
 
+    /**
+     * Tests the place order functionality.
+     *
+     * @throws Exception if an error occurs during the test
+     */
     @Test
     void testPlaceOrder() throws Exception {
         JwtUtil jwtUtil = new JwtUtil();

@@ -1,0 +1,107 @@
+openapi: "3.0.3"
+info:
+  title: "Order API"
+  description: "Order Microservice with CRUD operations and Feign Client to Product Microservice"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080/order-service"
+paths:
+  /users/{userId}/orders:
+    get:
+      summary: "Get User Orders"
+      description: "Get User Orders by User Id with Ordered Products"
+      operationId: "userOrders"
+      parameters:
+        - name: "userId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "List of Orders with Ordered Products \
+                        corresponding to a authenticated user"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /place:
+    post:
+      summary: "Place Order"
+      operationId: "Place Order"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderDto"
+        required: true
+      responses:
+        "201":
+          description: "Placed Order with Ordered Products"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /product/{name}:
+    get:
+      summary: "Product by Name"
+      description: "Product by Name from Product Microservice"
+      parameters:
+        - name: "name"
+          in: "path"
+          required: false
+      responses:
+        "200":
+          description: "Product by Name"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ProductDto"
+components:
+  schemas:
+    HttpHeaders:
+      type: "object"
+      properties: { }
+    ResponseEntity:
+      type: "object"
+      properties:
+        headers:
+          $ref: "#/components/schemas/HttpHeaders"
+    BigDecimal:
+      type: "object"
+      properties: { }
+    OrderedProductDto:
+      type: "object"
+      properties:
+        productId:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+        price:
+          $ref: "#/components/schemas/BigDecimal"
+        quantity:
+          type: "integer"
+          format: "int32"
+        stockId:
+          type: "integer"
+          format: "int64"
+    OrderDto:
+      type: "object"
+      properties:
+        userId:
+          type: "integer"
+          format: "int64"
+        orderId:
+          type: "integer"
+          format: "int64"
+        orderedProducts:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/OrderedProductDto"

@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Entity representing an order.
+ */
 @Entity
 @Table(name = "orders")
 @Data
