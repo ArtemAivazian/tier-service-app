@@ -15,6 +15,10 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 
+/**
+ * Data Transfer Object (DTO) for authentication purposes.
+ * This class contains user details necessary for authentication and authorization.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
