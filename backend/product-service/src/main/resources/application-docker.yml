@@ -1,0 +1,25 @@
+server:
+  port: 0
+
+spring:
+  devtools:
+    restart:
+      enabled: false
+  datasource:
+    url: jdbc:postgresql://eshop-db:5432/eshop
+  hazelcast:
+    config: classpath:hazelcast-docker.yml
+  kafka:
+    producer:
+      bootstrap-servers: broker:29092
+    consumer:
+      bootstrap-servers: broker:29092
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://test:test@discovery-service:8010/eureka
+
+logging:
+  file:
+    name: /api-logs/product-service.log

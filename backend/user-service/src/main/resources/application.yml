@@ -10,38 +10,33 @@ eureka:
 
 
 spring:
-  config:
-    import: optional:configserver:http://localhost:8012
   devtools:
     restart:
       enabled: true #automatically restart app after making changes
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
   application:
     name: user-service
+  hazelcast:
+    config: classpath:hazelcast.yml
   datasource:
-    url: jdbc:postgresql://localhost:5442/eshop
+    url: jdbc:postgresql://localhost:5432/eshop
     username: "admin"
     password: "123"
     driver-class-name: org.postgresql.Driver
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-#  flyway:
-#    enabled: true
+    show-sql: true
+
+#TO-DO: tests do not work
+  flyway:
+    enabled: false
 #    locations: classpath:db/migration
 #    baseline-on-migrate: true
-#    out-of-order: true
-
+#    out-of-order: false
+#    table: user_schema_history
+#    url: jdbc:postgresql://localhost:5444/eshop
+#    user: "admin"
+#    password: "123"
 
 
 token:

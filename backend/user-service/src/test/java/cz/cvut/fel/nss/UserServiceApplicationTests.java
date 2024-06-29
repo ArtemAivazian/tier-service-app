@@ -35,7 +35,7 @@ class UserServiceApplicationTests {
     @Autowired
     private MockMvc mockMvc;
     @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:9.6.12"));
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:15"));
 
     /**
      * Sets properties for the test containers.

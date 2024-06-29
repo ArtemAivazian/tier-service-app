@@ -42,7 +42,7 @@ class OrderServiceApplicationTests {
     @MockBean
     private ProductServiceClient productServiceClient;
     @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:9.6.12"));
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:15"));
 
     /**
      * Sets dynamic properties for the PostgreSQL container.

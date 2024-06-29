@@ -1,25 +1,17 @@
 spring:
   application:
     name: discovery-service
-  config:
-    import: optional:configserver:http://localhost:8012
   security:
     user:
       name: "test"
       password: "test"
-
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
 
 server:
   port: 8010
 
 eureka:
   instance:
-    hostname: localhost
+    hostname: "localhost"
   client:
     register-with-eureka: false #only only eureka server
     service-url:
