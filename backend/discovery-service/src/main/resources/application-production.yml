@@ -1,0 +1,12 @@
+server:
+  port: 8010
+
+eureka:
+  instance:
+    hostname: "172.31.26.79"
+
+spring:
+  security:
+    user:
+      name: "admin"
+      password: "production-strong-password"
