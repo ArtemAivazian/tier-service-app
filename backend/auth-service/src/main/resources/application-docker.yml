@@ -1,0 +1,18 @@
+server:
+  port: 0
+
+spring:
+  devtools:
+    restart:
+      enabled: false
+  datasource:
+    url: jdbc:postgresql://eshop-db:5432/eshop
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://test:test@discovery-service:8010/eureka
+
+logging:
+  file:
+    name: /api-logs/auth-service.log

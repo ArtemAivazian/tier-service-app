@@ -40,6 +40,7 @@ package-lock.json
 yarn.lock
 
 # Logs
+api-logs/
 logs
 *.log
 *.log.*
@@ -87,3 +88,5 @@ Thumbs.db
 # OS generated files
 .DS_Store*
 
+#DB 
+postgres-eshop/
