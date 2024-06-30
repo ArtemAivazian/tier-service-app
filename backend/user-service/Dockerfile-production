@@ -1,0 +1,20 @@
+FROM openjdk:17-alpine
+
+# Install PostgreSQL client
+RUN apk add --no-cache postgresql-client
+
+# Copy the JAR file
+COPY target/*.jar /user-service.jar
+
+# Copy the user insertion script
+COPY scripts-prod/insertUser.sh /usr/local/bin/insertUser.sh
+
+# Copy the startup script
+COPY scripts-prod/start.sh /start.sh
+
+# Make the scripts executable
+RUN chmod +x /usr/local/bin/insertUser.sh
+RUN chmod +x /start.sh
+
+# Set the entry point to the startup script
+ENTRYPOINT ["/start.sh"]
