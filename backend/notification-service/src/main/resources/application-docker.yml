@@ -1,0 +1,19 @@
+server:
+  port: 0
+
+spring:
+  devtools:
+    restart:
+      enabled: false
+  kafka:
+    consumer:
+      bootstrap-servers: broker:29092
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://test:test@discovery-service:8010/eureka
+
+logging:
+  file:
+    name: /api-logs/notification-service.log

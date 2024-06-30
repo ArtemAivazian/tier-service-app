@@ -1,4 +1,5 @@
 hazelcast:
+  cluster-name: local
   network:
     join:
       multicast:

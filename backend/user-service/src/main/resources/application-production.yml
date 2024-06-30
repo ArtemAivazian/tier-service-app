@@ -1,0 +1,22 @@
+server:
+  port: 0
+
+spring:
+  devtools:
+    restart:
+      enabled: false
+  datasource:
+    url: jdbc:postgresql://172.31.25.102:5432/eshop
+    username: "admin"
+    password: "strong-production-password"
+  hazelcast:
+    config: classpath:hazelcast-docker.yml
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://admin:production-strong-password@172.31.26.79:8010/eureka
+
+logging:
+  file:
+    name: /api-logs/user-service.log

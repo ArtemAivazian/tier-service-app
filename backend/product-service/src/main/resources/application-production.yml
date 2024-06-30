@@ -1,0 +1,27 @@
+server:
+  port: 0
+
+spring:
+  devtools:
+    restart:
+      enabled: false
+  datasource:
+    url: jdbc:postgresql://172.31.25.102:5432/eshop
+    username: "admin"
+    password: "strong-production-password"
+  hazelcast:
+    config: classpath:hazelcast-production.yml
+  kafka:
+    producer:
+      bootstrap-servers: 172.31.20.187:9092
+    consumer:
+      bootstrap-servers: 172.31.20.187:9092
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://admin:production-strong-password@172.31.26.79:8010/eureka
+
+logging:
+  file:
+    name: /api-logs/product-service.log
