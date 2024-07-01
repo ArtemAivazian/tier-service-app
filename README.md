@@ -210,6 +210,7 @@ Microservices communication is implemented by using Event-Driven Architecture an
 ![alt text](diagrams/deployment.png)
 
 ## Component Diagram
+![alt text](diagrams/component.png)
 
 ## Analysis and selection of solution alternatives
 **Own Development** 
