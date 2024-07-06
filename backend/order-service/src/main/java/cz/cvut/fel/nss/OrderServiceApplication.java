@@ -26,18 +26,6 @@ public class OrderServiceApplication {
     }
 
     /**
-     * Configures the ModelMapper bean with strict matching strategy.
-     *
-     * @return the configured ModelMapper bean
-     */
-    @Bean
-    public ModelMapper modelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        return modelMapper;
-    }
-
-    /**
      * Configures the Feign logger level to FULL.
      *
      * @return the Feign logger level

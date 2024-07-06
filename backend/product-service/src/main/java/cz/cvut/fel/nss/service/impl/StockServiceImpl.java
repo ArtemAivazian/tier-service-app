@@ -3,10 +3,10 @@ package cz.cvut.fel.nss.service.impl;
 import cz.cvut.fel.nss.data.Stock;
 import cz.cvut.fel.nss.dto.StockLdo;
 import cz.cvut.fel.nss.exception.StockNotFoundException;
+import cz.cvut.fel.nss.mapper.Mapper;
 import cz.cvut.fel.nss.repository.StockRepository;
 import cz.cvut.fel.nss.service.StockService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class StockServiceImpl implements StockService {
     private final StockRepository stockRepository;
-    private final ModelMapper mapper;
 
     /**
      * Creates a new stock.
@@ -29,9 +28,9 @@ public class StockServiceImpl implements StockService {
      */
     @CacheEvict(value = "stocks", allEntries = true)
     public StockLdo createStock(StockLdo stockLdo) {
-        Stock stock = mapper.map(stockLdo, Stock.class);
+        Stock stock = Mapper.mapToStock(stockLdo);
         Stock savedStock = stockRepository.save(stock);
-        return mapper.map(savedStock, StockLdo.class);
+        return Mapper.mapToStockLdo(savedStock);
     }
 
     /**
@@ -49,7 +48,7 @@ public class StockServiceImpl implements StockService {
         stock.setAddress(stockLdo.getAddress());
 
         Stock updatedStock = stockRepository.save(stock);
-        return mapper.map(updatedStock, StockLdo.class);
+        return Mapper.mapToStockLdo(updatedStock);
     }
 
     /**
@@ -74,6 +73,6 @@ public class StockServiceImpl implements StockService {
     public StockLdo findStockById(Long id) {
         Stock stock = stockRepository.findById(id).orElseThrow(()
                 -> new StockNotFoundException("Stock not found with id " + id));
-        return mapper.map(stock, StockLdo.class);
+        return Mapper.mapToStockLdo(stock);
     }
 }

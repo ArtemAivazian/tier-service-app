@@ -2,6 +2,7 @@ package cz.cvut.fel.nss.controller;
 
 import cz.cvut.fel.nss.dto.StockLdo;
 import cz.cvut.fel.nss.dto.StockDto;
+import cz.cvut.fel.nss.facade.StockFacade;
 import cz.cvut.fel.nss.service.StockService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -18,8 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/stock")
 @AllArgsConstructor
 public class StocksController {
-    private StockService stockService;
-    private ModelMapper mapper;
+    private StockFacade stockFacade;
 
     /**
      * Creates a new stock.
@@ -32,12 +32,10 @@ public class StocksController {
     public ResponseEntity<StockDto> createStock(
             @Valid @RequestBody StockDto request
     ) {
-        StockLdo stockLdo = mapper.map(request, StockLdo.class);
-        StockLdo savedStock = stockService.createStock(stockLdo);
-
+        StockDto createdStock = stockFacade.createStock(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(mapper.map(savedStock, StockDto.class));
+                .body(createdStock);
     }
 
     /**
@@ -53,10 +51,8 @@ public class StocksController {
             @PathVariable Long id,
             @Valid @RequestBody StockDto request
     ) {
-        StockLdo stockLdo = mapper.map(request, StockLdo.class);
-        StockLdo updatedStock = stockService.updateStock(id, stockLdo);
-
-        return ResponseEntity.ok(mapper.map(updatedStock, StockDto.class));
+        StockDto updatedStock = stockFacade.updateStock(id, request);
+        return ResponseEntity.ok(updatedStock);
     }
 
     /**
@@ -68,7 +64,7 @@ public class StocksController {
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteStock(@PathVariable Long id) {
-        stockService.deleteStock(id);
+        stockFacade.deleteStock(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -80,7 +76,7 @@ public class StocksController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<StockDto> getStockById(@PathVariable Long id) {
-        StockLdo stockLdo = stockService.findStockById(id);
-        return ResponseEntity.ok(mapper.map(stockLdo, StockDto.class));
+        StockDto stock = stockFacade.getStockById(id);
+        return ResponseEntity.ok(stock);
     }
 }

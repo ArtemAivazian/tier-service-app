@@ -67,4 +67,41 @@ management:
   endpoints:
     web:
       exposure:
-        include: beans,health,mappings,httpexchanges
+        include: beans,health,mappings,httpexchanges,circuitbreakers,circuitbreaker-events
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    circuitbreakers:
+      enabled: true
+    circuitbreaker-events:
+      enabled: true
+  health:
+    circuitbreakers:
+      enabled: true
+
+resilience4j:
+  circuitbreaker:
+    circuit-breaker-aspect-order: 1
+    instances:
+      product-service:
+        failure-rate-threshold: 50
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state:
+          seconds: 10
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 2
+        minimum-number-of-calls: 1
+        register-health-indicator: true
+        event-consumer-buffer-size: 100
+
+  retry:
+    retry-aspect-order: 2
+    instances:
+      product-service:
+        max-attempts: 3
+        wait-duration:
+          seconds: 2
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 5
+

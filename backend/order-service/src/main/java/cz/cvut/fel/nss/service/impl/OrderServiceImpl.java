@@ -8,6 +8,8 @@ import cz.cvut.fel.nss.exception.CannotConstructKafkaMessageException;
 import cz.cvut.fel.nss.exception.InsufficientAmountOfProductException;
 import cz.cvut.fel.nss.feign.ProductServiceClient;
 import cz.cvut.fel.nss.event.OrderPlacedEvent;
+import cz.cvut.fel.nss.feign.proxy.ProductServiceClientProxy;
+import cz.cvut.fel.nss.mapper.Mapper;
 import cz.cvut.fel.nss.repository.OrderRepository;
 import cz.cvut.fel.nss.service.OrderService;
 import cz.cvut.fel.nss.shared.ProductDto;
@@ -34,9 +36,8 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderRepository orderRepository;
     private KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
-    private final ProductServiceClient productServiceClient;
+    private final ProductServiceClientProxy productServiceClient;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-    private final ModelMapper mapper;
 
 
     /**
@@ -46,12 +47,11 @@ public class OrderServiceImpl implements OrderService {
      * @return a list of OrderLdo objects representing the user's orders
      */
     @Override
-    @Cacheable(value = "orders", key = "#userId")
     public List<OrderLdo> getUserOrders(String userId) {
         List<Order> orders = orderRepository.getOrdersByUserId(Long.valueOf(userId));
 
         List<OrderLdo> orderLdos = orders.stream()
-                .map(order -> mapper.map(order, OrderLdo.class))
+                .map(Mapper::mapToOrderLdo)
                 .toList();
 
         orderLdos.forEach(
@@ -72,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
     @CacheEvict(value = "orders", key = "#orderRequest.userId")
     public OrderLdo placeOrder(OrderLdo orderRequest, String authorization) {
 
-        //VALIDATE ORDERED PRODUCTS
+        // Validate ordered products
         List<OrderedProduct> orderedProducts = orderRequest.getOrderedProducts();
         orderedProducts.forEach(orderedProduct -> {
             ProductDto product = productServiceClient.getProductByName(orderedProduct.getName(), authorization);
@@ -82,21 +82,19 @@ public class OrderServiceImpl implements OrderService {
             }
         });
 
-        Order order = mapper.map(orderRequest, Order.class);
+        Order order = Mapper.mapToOrder(orderRequest);
         Order placedOrder = orderRepository.save(order);
 
         List<OrderedProductDto> orderedProductsDtos = orderedProducts.stream()
-                .map(orderedProduct -> mapper.map(orderedProduct, OrderedProductDto.class))
+                .map(Mapper::mapToOrderedProductDto)
                 .toList();
 
-
-        OrderPlacedEvent orderPlacedEvent = mapper.map(placedOrder, OrderPlacedEvent.class);
+        OrderPlacedEvent orderPlacedEvent = Mapper.mapToOrderPlacedEvent(placedOrder);
         orderPlacedEvent.setOrderedProducts(orderedProductsDtos);
         String orderId = orderPlacedEvent.getOrderId().toString();
 
         try {
-            kafkaTemplate.send("order-placed-topic-sync", orderId, orderPlacedEvent)
-                            .get();
+            kafkaTemplate.send("order-placed-topic-sync", orderId, orderPlacedEvent).get();
             LOGGER.info("Synchronous message has been sent to OrderPlacedTopicSync");
         } catch (ExecutionException | InterruptedException e) {
             throw new CannotConstructKafkaMessageException("Message cannot be constructed");
@@ -105,6 +103,6 @@ public class OrderServiceImpl implements OrderService {
         kafkaTemplate.send("order-placed-topic-async", orderId, orderPlacedEvent);
         LOGGER.info("Asynchronous message has been sent to OrderPlacedTopicAsync");
 
-        return mapper.map(placedOrder, OrderLdo.class);
+        return Mapper.mapToOrderLdo(placedOrder);
     }
 }

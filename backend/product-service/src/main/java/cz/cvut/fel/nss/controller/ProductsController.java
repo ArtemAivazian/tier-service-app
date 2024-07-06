@@ -3,6 +3,7 @@ package cz.cvut.fel.nss.controller;
 import cz.cvut.fel.nss.exception.StockNotFoundException;
 import cz.cvut.fel.nss.dto.ProductDto;
 import cz.cvut.fel.nss.dto.ProductLdo;
+import cz.cvut.fel.nss.facade.ProductFacade;
 import cz.cvut.fel.nss.service.ProductsService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,8 +22,7 @@ import java.util.List;
 @RequestMapping("/product")
 @AllArgsConstructor
 public class ProductsController {
-    private final ProductsService productsService;
-    private final ModelMapper mapper;
+    private final ProductFacade productFacade;
 
     /**
      * Creates a new product.
@@ -37,12 +37,10 @@ public class ProductsController {
             @Valid @RequestBody ProductDto productRequest
     ) throws StockNotFoundException
     {
-        ProductLdo productLdo = mapper.map(productRequest, ProductLdo.class);
-        ProductLdo savedProduct = productsService.createProduct(productLdo);
-
+        ProductDto createdProduct = productFacade.createProduct(productRequest);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(mapper.map(savedProduct, ProductDto.class));
+                .body(createdProduct);
     }
 
     /**
@@ -53,11 +51,8 @@ public class ProductsController {
     @GetMapping("/all")
     @PreAuthorize("permitAll()")
     public ResponseEntity<List<ProductDto>> getAllProducts() {
-        List<ProductLdo> allProducts = productsService.findAllProducts();
-
-        return ResponseEntity.ok(allProducts.stream()
-                .map(productDto -> mapper.map(productDto, ProductDto.class))
-                .toList());
+        List<ProductDto> allProducts = productFacade.getAllProducts();
+        return ResponseEntity.ok(allProducts);
     }
 
     /**
@@ -70,9 +65,8 @@ public class ProductsController {
     public ResponseEntity<ProductDto> getProductByName(
             @PathVariable("name") String name
     ) {
-        ProductLdo productLdo = productsService.findProductByName(name);
-
-        return ResponseEntity.ok(mapper.map(productLdo, ProductDto.class));
+        ProductDto product = productFacade.getProductByName(name);
+        return ResponseEntity.ok(product);
     }
 
     /**
@@ -90,10 +84,8 @@ public class ProductsController {
             @Valid @RequestBody ProductDto productRequest
     ) throws StockNotFoundException
     {
-        ProductLdo productLdo = mapper.map(productRequest, ProductLdo.class);
-        ProductLdo updatedProduct = productsService.updateProduct(id, productLdo);
-
-        return ResponseEntity.ok(mapper.map(updatedProduct, ProductDto.class));
+        ProductDto updatedProduct = productFacade.updateProduct(id, productRequest);
+        return ResponseEntity.ok(updatedProduct);
     }
 
     /**
@@ -105,7 +97,7 @@ public class ProductsController {
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productsService.deleteProduct(id);
+        productFacade.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
 }

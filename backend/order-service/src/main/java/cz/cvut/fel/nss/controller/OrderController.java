@@ -2,6 +2,7 @@ package cz.cvut.fel.nss.controller;
 
 import cz.cvut.fel.nss.dto.OrderDto;
 import cz.cvut.fel.nss.dto.OrderLdo;
+import cz.cvut.fel.nss.facade.OrderFacade;
 import cz.cvut.fel.nss.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -27,8 +28,7 @@ import java.util.Optional;
 @Slf4j
 public class OrderController {
 
-    private final OrderService orderService;
-    private final ModelMapper mapper;
+    private final OrderFacade orderFacade;
 
     /**
      * Retrieves the orders for a specific user.
@@ -41,13 +41,8 @@ public class OrderController {
     public ResponseEntity<List<OrderDto>> userOrders(
             @PathVariable("userId") String userId
     ) {
-        List<OrderLdo> userOrders = orderService.getUserOrders(userId);
-
-        return ResponseEntity.ok(
-                userOrders.stream()
-                .map(orderLdo -> mapper.map(orderLdo, OrderDto.class))
-                .toList()
-        );
+        List<OrderDto> userOrders = orderFacade.getUserOrders(userId);
+        return ResponseEntity.ok(userOrders);
 
     }
 
@@ -68,11 +63,7 @@ public class OrderController {
         String userId = authentication.getPrincipal().toString();
         orderRequest.setUserId(Long.valueOf(userId));
 
-        OrderLdo orderLdo = mapper.map(orderRequest, OrderLdo.class);
-        OrderLdo placedOrder = orderService.placeOrder(orderLdo, authorization);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                mapper.map(placedOrder, OrderDto.class)
-        );
+        OrderDto placedOrder = orderFacade.placeOrder(orderRequest, authorization);
+        return ResponseEntity.status(HttpStatus.CREATED).body(placedOrder);
     }
 }

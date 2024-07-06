@@ -24,18 +24,6 @@ public class ProductServiceApplication {
     }
 
     /**
-     * Configures the ModelMapper bean with strict matching strategy.
-     *
-     * @return the configured ModelMapper bean
-     */
-    @Bean
-    public ModelMapper modelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        return modelMapper;
-    }
-
-    /**
      * Configures the HttpExchangeRepository bean for HTTP trace repository.
      *
      * @return the HttpExchangeRepository bean
