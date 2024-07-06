@@ -69,6 +69,27 @@
       - `docker-compose.yml`
       - *Deployment Diagram: vz*
 - **Use at least 5 design patterns (must make sense)** (mandatory)
+  - *Facade*
+    - Classes:
+      - `UserFacade.java`
+      - `ProductFacade.java`
+      - `StockFacade.java`
+      - `OrderFacade.java`
+  - *Proxy*
+    - Classes:
+      - `ProductServiceClientProxy.java`
+      - `OrdersServiceClientProxy.java`
+  - *Builder*
+    - Classes:
+      - `UserEntity.java`
+      - `Order.java`
+      - `OrderedProduct.java`
+      - `Product.java`
+      - `Stock.java`
+      - `Mapper.java`
+      - `*Dto.java`
+      - `*Ldo.java`
+      - `UserMapper.java`
   - *DAO*
     - Classes:
       - `OrderRepository.java`
@@ -107,14 +128,6 @@
       - `UserLdo.java`
       - `OrderDto.java`
       - `OrderedProductDto.java`
-  - *Builder (Spring Annotation - mapper/ in product-service)*
-    - Classes:
-      - `UserEntity.java`
-      - `Order.java`
-      - `OrderedProduct.java`
-      - `Product.java`
-      - `Stock.java`
-      - `Mapper.java`
   - *Interceptor*
     - Classes:
       - `LoggingFilter.java`
